@@ -18,8 +18,10 @@ public class Program {
         };
 
         Player[] outPlayers = new Player[3];
+        Player[] scratch = new Player[3];
 
-        long maxTeamwork = PocuBasketballAssociation.find3ManDreamTeam(players, outPlayers); // maxTeamwork: 210, outPlayers: [ Player 4, Player 2, Player 7 ]
+        long maxTeamwork = PocuBasketballAssociation.find3ManDreamTeam(players, outPlayers); // maxTeamwork: 219, outPlayers: [ Player 4, Player 2, Player 3 ]
+
         System.out.println(maxTeamwork);
         for (Player p : outPlayers) {
             System.out.println(p.getName());

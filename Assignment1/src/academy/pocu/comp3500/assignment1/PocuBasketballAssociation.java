@@ -121,14 +121,11 @@ public class PocuBasketballAssociation {
     * */
     public static long find3ManDreamTeam(final Player[] players, final Player[] outPlayers) {
         int[][][] teamworks = new int[players.length][players.length][players.length];
-        int[] top1  = new int[3];
-        int[] top2  = new int[3];
-        int[] top3  = new int[3];
+        int[] top1  = {-1, -1, -1};
         int sumPass     = 0;
         int minAssist   = 0;
         int result      = 0;
         int max = 0;
-        int min = 9999;
 
         for (int i = 0; i < players.length; i++) {
             for (int j = 0; j < players.length; j++) {
@@ -146,7 +143,6 @@ public class PocuBasketballAssociation {
 
         for (int i = 0; i < players.length; i++) {
             max = 0;
-            min = 9999;
             for (int j = 0; j < players.length; j++) {
                 for (int k = 0; k < players.length; k++) {
                     if (i == j || i == k || j == k) {
@@ -155,16 +151,19 @@ public class PocuBasketballAssociation {
 
                     if (teamworks[i][j][k] > max) {
                         max = teamworks[i][j][k];
-                    }
-                    if (teamworks[i][j][k] < min) {
-                        min = teamworks[i][j][k];
+                        top1[0] = i;
+                        top1[1] = j;
+                        top1[2] = k;
                     }
                 }
             }
         }
 
+        outPlayers[0] = players[top1[0]];
+        outPlayers[1] = players[top1[1]];
+        outPlayers[2] = players[top1[2]];
 
-        return result;
+        return teamworks[top1[0]][top1[1]][top1[2]];
     }
 
     /* k명으로 구성된 드림팀
@@ -173,57 +172,56 @@ public class PocuBasketballAssociation {
     * 2. outPLayers에 k인방 대입
     * 3. k인방의 팀워크 합 변환
     * */
-    /*
-    public static long findDreamTeam(final Player[] players, int k, final Player[] outPlayers) {
-        int[][][] teamworks = new int[players.length][][];
-        int[] topK = new int[k];
-        int result      = 0;
 
+    public static long findDreamTeam(final Player[] players, int k, final Player[] outPlayers) {
+        int[][] teamworks = new int[players.length][k+1];
+        int[] teamworkIndex;
+        int[] top1  = {-1, -1, -1};
+        int sumPass     = 0;
+        int minAssist   = 0;
+        int result      = 0;
+        int max = 0;
+/*
         for (int i = 0; i < players.length; i++) {
             for (int j = 0; j < players.length; j++) {
                 for (int l = 0; l < players.length; l++) {
                     if (i == j || i == l || j == l) {
                         continue;
                     }
+                    sumPass = players[i].getPassesPerGame() + players[j].getPassesPerGame() + players[k].getPassesPerGame();
+                    minAssist = min(players[i].getAssistsPerGame(), players[j].getAssistsPerGame(), players[k].getAssistsPerGame());
 
+                    teamworks[i][j][k] = sumPass * minAssist;
+                    teamworks[teamworkIndex][0] = i;
                 }
             }
         }
 
-        for (int i = 0; i < topK.length; i++) {
-            topK[i] = 0;
-        }
-        // top N명 구하기
-        // 1. players 배열에서 가장 큰 수 구하기(topK에 있는 인덱스 제외)
-        // 2. 이를 k의 개수만큼 반복
-        for (int i = 0; i < topK.length; i++) {
+        for (int i = 0; i < players.length; i++) {
+            max = 0;
             for (int j = 0; j < players.length; j++) {
-                if (j == 0) {
-                    if (contains(topK, j) != -1) {
-                        topK[i]++;
+                for (int k = 0; k < players.length; k++) {
+                    if (i == j || i == k || j == k) {
+                        continue;
+                    }
+
+                    if (teamworks[i][j][k] > max) {
+                        max = teamworks[i][j][k];
+                        top1[0] = i;
+                        top1[1] = j;
+                        top1[2] = k;
                     }
                 }
-                if (contains(topK, j) != -1 || i == j) {
-                    continue;
-                }
-                if (teamworks[j] > teamworks[topK[i]]) {
-                    topK[i] = j;
-                }
             }
         }
 
-        // outPlayers에 k인방 대입
-        for (int i = 0; i < outPlayers.length; i++) {
-            outPlayers[i] = players[topK[i]];
-        }
-
-        for (int top : topK) {
-            result += teamworks[top];
-        }
-
-        return result;
+        outPlayers[0] = players[top1[0]];
+        outPlayers[1] = players[top1[1]];
+        outPlayers[2] = players[top1[2]];
+*/
+        return -1;
     }
-    */
+
     public static int min(int num1, int num2, int num3) {
         int min = 999999;
 
