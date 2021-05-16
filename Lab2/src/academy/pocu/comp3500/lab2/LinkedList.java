@@ -68,7 +68,7 @@ public final class LinkedList {
         Node dummy = rootOrNull;
         Node prev = null;
 
-        if (index < 0 || index > getSize(rootOrNull)) {
+        if (index < 0 || index > getSize(rootOrNull) || rootOrNull == null) {
             return rootOrNull;
         }
 

@@ -10,16 +10,20 @@ public class Program {
     public static void main(String[] args) {
         {
             Node root = LinkedList.append(null, 10);
-            Node dummy = root;
 
             root = LinkedList.append(root, 11);
             root = LinkedList.append(root, 12);
             root = LinkedList.append(root, 13);
-            root = LinkedList.append(root, 14);
 
-            root = LinkedList.reverse(root); // root: 14, list: 14 -> 13 -> 12 -> 11 -> 10
+            root = LinkedList.removeAt(root, 0); // root: 11, list: 11 -> 12 -> 13
+            root = LinkedList.removeAt(root, 1); // root: 11, list: 11 -> 13
+            root = LinkedList.removeAt(root, -1);
+            root = LinkedList.removeAt(root, 5);
+            root = LinkedList.removeAt(root, 0);
+            root = LinkedList.removeAt(root, 0);
+            root = LinkedList.removeAt(root, 0);
 
-            System.out.println(root.getData());
+            System.out.println(root);
             while (root.getNextOrNull() != null) {
                 root = root.getNextOrNull();
                 System.out.println(root.getData());
