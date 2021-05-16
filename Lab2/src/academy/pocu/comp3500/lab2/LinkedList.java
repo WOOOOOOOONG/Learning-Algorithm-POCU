@@ -123,7 +123,7 @@ public final class LinkedList {
     }
 
     public static Node getOrNull(final Node rootOrNull, final int index) {
-        if (index < 0 || index >= getSize(rootOrNull)) {
+        if (index < 0) {
             return null;
         }
 
@@ -132,9 +132,9 @@ public final class LinkedList {
             if (node.getNextOrNull() == null) {
                 return null;
             }
+
             node = node.getNextOrNull();
         }
-
         return node;
     }
 
@@ -142,52 +142,23 @@ public final class LinkedList {
         if (rootOrNull == null) {
             return null;
         }
-
-        Node newRootNode = null;
         Node dummy = rootOrNull;
-        Node dummy2 = rootOrNull;
-        Node deleteNode = rootOrNull;
-        int index = 0;
+        Node newRootNode = null;
+        int index = getSize(rootOrNull);
 
-        index++;
-        while (dummy.getNextOrNull() != null) {
-            dummy = dummy.getNextOrNull();
-            index++;
-        }
-
-        for (int i = index - 1; i >= (index / 2); i--) {
-            int j = index - 1 - i;
-            dummy = getOrNull(rootOrNull, i); // 뒷값
-            dummy2 = getOrNull(rootOrNull, j); // 앞값
-            Node tempNode = null;
-            if (newRootNode != null) {
-                tempNode = getOrNull(rootOrNull, i + 1);
-            }
-
-            if (dummy == dummy2) {
+        for (int j = index - 1; j >= 0; j--) {
+            dummy = rootOrNull;
+            if (j == 0) {
+                getOrNull(dummy, j).setNext(null);
                 break;
             }
 
-            dummy = new Node(dummy.getData()); // 13
-            dummy.setNext(dummy2.getNextOrNull());// 13
-            if (j != 0) {
-                getOrNull(newRootNode, j - 1).setNext(dummy);
+            if (j == index - 1) {
+                newRootNode = getOrNull(dummy, j);
+                System.out.println(newRootNode.getData());
             }
-
-            dummy2 = new Node(dummy2.getData()); // 11
-            if (j != 0) {
-                getOrNull(newRootNode, i - 1).setNext(dummy2);
-                dummy2.setNext(tempNode);
-            } else {
-                getOrNull(rootOrNull, i - 1).setNext(dummy2);
-            }
-
-            if (i == index - 1) {
-                newRootNode = dummy;
-            }
+            getOrNull(dummy, j).setNext(getOrNull(dummy, j - 1));
         }
-
-        rootOrNull.setNext(null);
 
         return newRootNode;
     }
