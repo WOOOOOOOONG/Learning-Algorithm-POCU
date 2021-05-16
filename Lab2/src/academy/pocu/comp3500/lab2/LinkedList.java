@@ -84,6 +84,9 @@ public final class LinkedList {
 
             return dummy;
         } else {
+            if (dummy == null) {
+                return rootOrNull;
+            }
             removeNode = dummy;
             prev.setNext(removeNode.getNextOrNull());
 
@@ -100,14 +103,16 @@ public final class LinkedList {
         int index = 0;
         boolean bIsFind = false;
 
-        while (node.getNextOrNull() != null) {
+        if (node.getData() == data) {
+            bIsFind = true;
+        }
+        while (bIsFind != true && node.getNextOrNull() != null) {
+            node = node.getNextOrNull();
+            index++;
             if (data == node.getData()) {
                 bIsFind = true;
                 break;
             }
-
-            index++;
-            node = node.getNextOrNull();
         }
 
         if (bIsFind) {
@@ -150,6 +155,8 @@ public final class LinkedList {
 
         for (int i = index - 1; i >= 0; i--) {
             reverseNode = append(reverseNode, getOrNull(rootOrNull, i).getData());
+            Node tempNode = getOrNull(rootOrNull, i);
+            tempNode = null;
         }
 
         return reverseNode;
