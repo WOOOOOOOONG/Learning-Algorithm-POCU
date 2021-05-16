@@ -5,17 +5,25 @@ import academy.pocu.comp3500.lab2.LinkedList;
 
 public final class Stack {
     private Node root;
+    private Node tail;
+    private int totalIndex;
 
     public Stack() {
         root = null;
+        totalIndex = 0;
     }
 
     public void push(final int data) {
         if (root == null) {
             root = new Node(data);
+            tail = root;
+            totalIndex++;
             return;
         }
-        LinkedList.append(root, data);
+        Node newNode = new Node(data);
+        tail.setNext(newNode);
+        tail = newNode;
+        totalIndex++;
     }
 
     public int peek() {
@@ -23,21 +31,18 @@ public final class Stack {
             return 0;
         }
 
-        Node dummy = root;
-        while (dummy.getNextOrNull() != null) {
-            dummy = dummy.getNextOrNull();
-        }
-        return dummy.getData();
+        return tail.getData();
     }
 
     public int pop() {
         if (getSize() == 0) {
             return -1;
         }
-        int size = getSize();
-        int removeData = peek();
-        LinkedList.removeAt(root, size - 1);
 
+        int removeData = tail.getData();
+        tail = null;
+        tail = LinkedList.getOrNull(root, LinkedList.getSize(root) - 1);
+        totalIndex--;
         return removeData;
     }
 
@@ -46,13 +51,6 @@ public final class Stack {
             return 0;
         }
 
-        Node dummy = root;
-        int index = 1;
-        while (dummy.getNextOrNull() != null) {
-            dummy = dummy.getNextOrNull();
-            index++;
-        }
-
-        return index;
+        return totalIndex;
     }
 }

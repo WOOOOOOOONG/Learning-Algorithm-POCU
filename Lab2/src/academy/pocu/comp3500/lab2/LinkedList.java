@@ -37,7 +37,7 @@ public final class LinkedList {
         Node dummy = rootOrNull;
         Node prev = null;
 
-        if (index < 0) {
+        if (index < 0 || index > getSize(rootOrNull)) {
             return rootOrNull;
         }
 
@@ -64,7 +64,7 @@ public final class LinkedList {
         Node dummy = rootOrNull;
         Node prev = null;
 
-        if (index < 0) {
+        if (index < 0 || index > getSize(rootOrNull)) {
             return rootOrNull;
         }
 
@@ -88,15 +88,20 @@ public final class LinkedList {
     }
 
     public static int getIndexOf(final Node rootOrNull, final int data) {
+        if (rootOrNull == null) {
+            return -1;
+        }
+
         Node node = rootOrNull;
         int index = 0;
         boolean bIsFind = false;
 
-        while (rootOrNull.getNextOrNull() != null) {
+        while (node.getNextOrNull() != null) {
             if (data == node.getData()) {
                 bIsFind = true;
                 break;
             }
+
             index++;
             node = node.getNextOrNull();
         }
@@ -109,6 +114,10 @@ public final class LinkedList {
     }
 
     public static Node getOrNull(final Node rootOrNull, final int index) {
+        if (index < 0) {
+            return null;
+        }
+
         Node node = rootOrNull;
         for (int i = 0; i < index; i++) {
             if (node.getNextOrNull() == null) {
@@ -121,10 +130,12 @@ public final class LinkedList {
     }
 
     public static Node reverse(final Node rootOrNull) {
+        if (rootOrNull == null) {
+            return null;
+        }
+
         Node reverseNode = null;
-        Node newRoot = null;
         Node dummy = rootOrNull;
-        Node dummy2 = null;
         int index = 0;
 
         index++;
@@ -134,26 +145,17 @@ public final class LinkedList {
         }
 
         for (int i = index - 1; i >= 0; i--) {
-            dummy = rootOrNull;
-
-            for (int j = 0; j < i; j++) {
-                dummy = dummy.getNextOrNull();
-            }
-            //System.out.println("dummy : " + dummy.getData());
-            if (i == index - 1) {
-                reverseNode = dummy;
-                newRoot = reverseNode;
-            } else {
-                dummy2 = new Node(dummy.getData());
-                reverseNode.setNext(dummy2);
-                reverseNode = dummy2;
-            }
+            reverseNode = append(reverseNode, getOrNull(rootOrNull, i).getData());
         }
 
-        return newRoot;
+        return reverseNode;
     }
 
     public static Node interleaveOrNull(final Node root0OrNull, final Node root1OrNull) {
+        if (root0OrNull == null && root1OrNull == null) {
+            return null;
+        }
+
         Node dummy1 = root0OrNull;
         Node dummy2 = root1OrNull;
         Node newNode = null;
@@ -163,7 +165,10 @@ public final class LinkedList {
 
         // 1. 두 값을 순서대로 넣기
         while (true) {
-            if (!bFirst) {
+            if (!bFirst && (dummy1 == null || dummy2 == null)) {
+                bFirst = true;
+                continue;
+            } else if (!bFirst) {
                 newNode = new Node(dummy1.getData());
                 memoryNode = newNode;
                 newRootNode = memoryNode;
@@ -173,7 +178,8 @@ public final class LinkedList {
                 memoryNode = newNode;
 
                 bFirst = true;
-            } else if (dummy1.getNextOrNull() != null && dummy2.getNextOrNull() != null) {
+            } else if ((dummy1 != null && dummy2 != null) &&
+                    dummy1.getNextOrNull() != null && dummy2.getNextOrNull() != null) {
                 dummy1 = dummy1.getNextOrNull();
                 newNode = new Node(dummy1.getData());
                 memoryNode.setNext(newNode);
@@ -183,12 +189,12 @@ public final class LinkedList {
                 newNode = new Node(dummy2.getData());
                 memoryNode.setNext(newNode);
                 memoryNode = newNode;
-            } else if (dummy1.getNextOrNull() != null) {
+            } else if (dummy1 != null && dummy1.getNextOrNull() != null) {
                 dummy1 = dummy1.getNextOrNull();
                 newNode = new Node(dummy1.getData());
                 memoryNode.setNext(newNode);
                 memoryNode = newNode;
-            } else if (dummy2.getNextOrNull() != null) {
+            } else if (dummy2 != null && dummy2.getNextOrNull() != null) {
                 dummy2 = dummy2.getNextOrNull();
                 newNode = new Node(dummy2.getData());
                 memoryNode.setNext(newNode);
@@ -200,5 +206,20 @@ public final class LinkedList {
 
         // 결과 리스트의 첫 번째 노드를 반환
         return newRootNode;
+    }
+
+    public static int getSize(Node rootOrNull) {
+        if (rootOrNull == null) {
+            return -1;
+        }
+
+        Node dummy = rootOrNull;
+        int index = 1;
+        while (dummy.getNextOrNull() != null) {
+            dummy = dummy.getNextOrNull();
+            index++;
+        }
+
+        return index;
     }
 }

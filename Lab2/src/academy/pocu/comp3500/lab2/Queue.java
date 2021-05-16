@@ -4,17 +4,21 @@ import academy.pocu.comp3500.lab2.datastructure.Node;
 
 public final class Queue {
     private Node root;
+    private int totalIndex;
 
     public Queue() {
         root = null;
+        totalIndex = 0;
     }
 
     public void enqueue(final int data) {
         if (root == null) {
             root = new Node(data);
+            totalIndex++;
             return;
         }
         root = LinkedList.prepend(root, data);
+        totalIndex++;
     }
 
     public int peek() {
@@ -22,15 +26,23 @@ public final class Queue {
             return 0;
         }
 
-        return root.getData();
+        return totalIndex;
     }
 
     public int dequeue() {
         if (getSize() == -1) {
             return -1;
         }
+        Node dummy = root;
         int removeData = root.getData();
-        root = LinkedList.removeAt(root, 0);
+
+        if (root.getNextOrNull() != null) {
+            dummy = root.getNextOrNull();
+            root.setNext(null);
+            root = dummy;
+        } else {
+            root = null;
+        }
 
         return removeData;
     }
@@ -40,13 +52,6 @@ public final class Queue {
             return 0;
         }
 
-        Node dummy = root;
-        int index = 1;
-        while (dummy.getNextOrNull() != null) {
-            dummy = dummy.getNextOrNull();
-            index++;
-        }
-
-        return index;
+        return totalIndex;
     }
 }
