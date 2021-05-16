@@ -144,7 +144,9 @@ public final class LinkedList {
         }
 
         Node reverseNode = null;
+        Node newRootNode = null;
         Node dummy = rootOrNull;
+        Node dummy2 = rootOrNull;
         int index = 0;
 
         index++;
@@ -153,13 +155,59 @@ public final class LinkedList {
             index++;
         }
 
+        for (int i = index - 1; i >= (int)(index / 2); i--) {
+            int j = index - 1 - i;
+            dummy = getOrNull(rootOrNull, i); // 뒷값
+            dummy2 = getOrNull(rootOrNull, j); // 앞값
+            Node tempNode = null;
+            if (newRootNode != null) {
+                tempNode = getOrNull(rootOrNull, i + 1);
+            }
+
+            if (dummy == dummy2) {
+                break;
+            }
+
+            dummy = new Node(dummy.getData()); // 13
+            dummy.setNext(dummy2.getNextOrNull());// 13
+            if (j != 0) {
+                getOrNull(newRootNode, j - 1).setNext(dummy);
+            }
+
+            dummy2 = new Node(dummy2.getData()); // 11
+            if (j != 0) {
+                getOrNull(newRootNode, i - 1).setNext(dummy2);
+                dummy2.setNext(tempNode);
+            } else {
+                getOrNull(rootOrNull, i - 1).setNext(dummy2);
+            }
+
+            if (i == index - 1) {
+                newRootNode = dummy;
+            }
+            /*
+            Node n = newRootNode;
+            if (n != null) {
+                System.out.print(n.getData() + ", ");
+                while (n.getNextOrNull() != null) {
+                    n = n.getNextOrNull();
+                    System.out.print(n.getData() + ", ");
+                }
+                System.out.println();
+            }
+             */
+        }
+
+        /*
         for (int i = index - 1; i >= 0; i--) {
             reverseNode = append(reverseNode, getOrNull(rootOrNull, i).getData());
             Node tempNode = getOrNull(rootOrNull, i);
             tempNode = null;
-        }
+        }*/
 
-        return reverseNode;
+
+
+        return newRootNode;
     }
 
     public static Node interleaveOrNull(final Node root0OrNull, final Node root1OrNull) {
