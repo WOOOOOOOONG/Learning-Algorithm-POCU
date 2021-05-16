@@ -17,7 +17,7 @@ public final class Queue {
             totalIndex++;
             return;
         }
-        root = LinkedList.prepend(root, data);
+        LinkedList.prepend(root, data);
         totalIndex++;
     }
 
@@ -26,13 +26,14 @@ public final class Queue {
             return 0;
         }
 
-        return totalIndex;
+        return root.getData();
     }
 
     public int dequeue() {
         if (getSize() == -1) {
             return -1;
         }
+
         Node dummy = root;
         int removeData = root.getData();
 

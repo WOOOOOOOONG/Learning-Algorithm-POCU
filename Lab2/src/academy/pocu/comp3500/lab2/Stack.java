@@ -41,7 +41,7 @@ public final class Stack {
 
         int removeData = tail.getData();
         tail = null;
-        tail = LinkedList.getOrNull(root, LinkedList.getSize(root) - 1);
+        tail = LinkedList.getOrNull(root, getSize() - 2);
         totalIndex--;
         return removeData;
     }

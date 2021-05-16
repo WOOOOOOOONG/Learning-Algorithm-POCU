@@ -129,7 +129,7 @@ public final class LinkedList {
 
         Node node = rootOrNull;
         for (int i = 0; i < index; i++) {
-            if (node.getNextOrNull() == null) {
+            if (node == null || node.getNextOrNull() == null) {
                 return null;
             }
 
@@ -167,50 +167,35 @@ public final class LinkedList {
         if (root0OrNull == null && root1OrNull == null) {
             return null;
         }
-
         Node dummy1 = root0OrNull;
         Node dummy2 = root1OrNull;
-        Node newNode = null;
+        Node lastNode = null;
         Node newRootNode = null;
-        Node memoryNode = null;
-        boolean bFirst = false;
+        int root1Size = getSize(root0OrNull);
+        int root2Size = getSize(root1OrNull);
+        int dummy1Index = 0;
+        int dummy2Index = 0;
 
-        // 1. 두 값을 순서대로 넣기
+        lastNode = getOrNull(root0OrNull, dummy1Index++);
+        newRootNode = lastNode;
+        lastNode.setNext(getOrNull(root1OrNull, dummy2Index++));
+        lastNode = lastNode.getNextOrNull();
         while (true) {
-            if (!bFirst && (dummy1 == null || dummy2 == null)) {
-                bFirst = true;
-                continue;
-            } else if (!bFirst) {
-                newNode = new Node(dummy1.getData());
-                memoryNode = newNode;
-                newRootNode = memoryNode;
+            if (dummy1Index >= root1Size && dummy2Index >= root2Size) {
+                break;
+            }
 
-                newNode = new Node(dummy2.getData());
-                memoryNode.setNext(newNode);
-                memoryNode = newNode;
-
-                bFirst = true;
-            } else if ((dummy1 != null && dummy2 != null) &&
-                    dummy1.getNextOrNull() != null && dummy2.getNextOrNull() != null) {
-                dummy1 = dummy1.getNextOrNull();
-                newNode = new Node(dummy1.getData());
-                memoryNode.setNext(newNode);
-                memoryNode = newNode;
-
-                dummy2 = dummy2.getNextOrNull();
-                newNode = new Node(dummy2.getData());
-                memoryNode.setNext(newNode);
-                memoryNode = newNode;
-            } else if (dummy1 != null && dummy1.getNextOrNull() != null) {
-                dummy1 = dummy1.getNextOrNull();
-                newNode = new Node(dummy1.getData());
-                memoryNode.setNext(newNode);
-                memoryNode = newNode;
-            } else if (dummy2 != null && dummy2.getNextOrNull() != null) {
-                dummy2 = dummy2.getNextOrNull();
-                newNode = new Node(dummy2.getData());
-                memoryNode.setNext(newNode);
-                memoryNode = newNode;
+            if (dummy1Index < root1Size && dummy2Index < root2Size) {
+                lastNode.setNext(getOrNull(root0OrNull, dummy1Index++));
+                lastNode = lastNode.getNextOrNull();
+                lastNode.setNext(getOrNull(root1OrNull, dummy2Index++));
+                lastNode = lastNode.getNextOrNull();
+            } else if (dummy1Index < root1Size) {
+                lastNode.setNext(getOrNull(root0OrNull, dummy1Index++));
+                lastNode = lastNode.getNextOrNull();
+            } else if (dummy2Index < root2Size) {
+                lastNode.setNext(getOrNull(root1OrNull, dummy2Index++));
+                lastNode = lastNode.getNextOrNull();
             } else {
                 break;
             }
