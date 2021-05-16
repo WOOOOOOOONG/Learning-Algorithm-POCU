@@ -18,7 +18,6 @@ public class Program {
 
             root = LinkedList.reverse(root); // root: 14, list: 14 -> 13 -> 12 -> 11 -> 10
 
-
             System.out.print(root.getData() + ", ");
             while (root.getNextOrNull() != null) {
                 root = root.getNextOrNull();

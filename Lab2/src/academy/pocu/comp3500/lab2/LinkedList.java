@@ -143,10 +143,10 @@ public final class LinkedList {
             return null;
         }
 
-        Node reverseNode = null;
         Node newRootNode = null;
         Node dummy = rootOrNull;
         Node dummy2 = rootOrNull;
+        Node deleteNode = rootOrNull;
         int index = 0;
 
         index++;
@@ -155,7 +155,7 @@ public final class LinkedList {
             index++;
         }
 
-        for (int i = index - 1; i >= (int)(index / 2); i--) {
+        for (int i = index - 1; i >= (index / 2); i--) {
             int j = index - 1 - i;
             dummy = getOrNull(rootOrNull, i); // 뒷값
             dummy2 = getOrNull(rootOrNull, j); // 앞값
@@ -185,27 +185,9 @@ public final class LinkedList {
             if (i == index - 1) {
                 newRootNode = dummy;
             }
-            /*
-            Node n = newRootNode;
-            if (n != null) {
-                System.out.print(n.getData() + ", ");
-                while (n.getNextOrNull() != null) {
-                    n = n.getNextOrNull();
-                    System.out.print(n.getData() + ", ");
-                }
-                System.out.println();
-            }
-             */
         }
 
-        /*
-        for (int i = index - 1; i >= 0; i--) {
-            reverseNode = append(reverseNode, getOrNull(rootOrNull, i).getData());
-            Node tempNode = getOrNull(rootOrNull, i);
-            tempNode = null;
-        }*/
-
-
+        rootOrNull.setNext(null);
 
         return newRootNode;
     }
