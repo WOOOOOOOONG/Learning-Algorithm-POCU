@@ -12,22 +12,19 @@ public class Program {
             Node root = LinkedList.append(null, 10);
 
             root = LinkedList.append(root, 11);
-            root = LinkedList.append(root, 12);
-            root = LinkedList.append(root, 13);
 
-            root = LinkedList.removeAt(root, 0); // root: 11, list: 11 -> 12 -> 13
-            root = LinkedList.removeAt(root, 1); // root: 11, list: 11 -> 13
-            root = LinkedList.removeAt(root, -1);
-            root = LinkedList.removeAt(root, 5);
-            root = LinkedList.removeAt(root, 0);
-            root = LinkedList.removeAt(root, 0);
-            root = LinkedList.removeAt(root, 0);
+            Node node = LinkedList.getOrNull(root, 0); // node: 10
+            System.out.println(node.getData());
+            node = LinkedList.getOrNull(root, 5); // node: 11
+            System.out.println(node);
 
-            System.out.println(root);
-            while (root.getNextOrNull() != null) {
-                root = root.getNextOrNull();
-                System.out.println(root.getData());
+            /*
+            System.out.println(node.getData());
+            while (node.getNextOrNull() != null) {
+                node = node.getNextOrNull();
+                System.out.println(node.getData());
             }
+             */
         }
     }
 }

@@ -123,7 +123,7 @@ public final class LinkedList {
     }
 
     public static Node getOrNull(final Node rootOrNull, final int index) {
-        if (index < 0) {
+        if (index < 0 || index >= getSize(rootOrNull)) {
             return null;
         }
 
