@@ -32,14 +32,10 @@ public final class LinkedList {
         return newNode;
     }
 
-    /* insertAt
-    * 1. index 위치까지 이동
-    * 2. 연결관계 유지
-    * */
     public static Node insertAt(final Node rootOrNull, final int index, final int data) {
         Node newNode = new Node(data);
-        Node dummy   = rootOrNull;
-        Node prev    = null;
+        Node dummy = rootOrNull;
+        Node prev = null;
 
         if (index < 0) {
             return rootOrNull;
@@ -63,15 +59,10 @@ public final class LinkedList {
         }
     }
 
-    /* removeAt
-    * 1. removeNode를 통해 지울 내용 저장, prev로 이전 노드 내용 저장
-    * 2. index 위치까지 이동(삭제할 수 없는 위치라면 return)
-    * 3. 위치관계 재수정
-    * */
     public static Node removeAt(final Node rootOrNull, final int index) {
         Node removeNode = null;
-        Node dummy   = rootOrNull;
-        Node prev    = null;
+        Node dummy = rootOrNull;
+        Node prev = null;
 
         if (index < 0) {
             return rootOrNull;
@@ -130,110 +121,82 @@ public final class LinkedList {
     }
 
     public static Node reverse(final Node rootOrNull) {
-        Node reverseNode = rootOrNull;
+        Node reverseNode = null;
         Node newRoot = null;
-        int[] data;
+        Node dummy = rootOrNull;
+        Node dummy2 = null;
         int index = 0;
-        int i = 0;
 
         index++;
-        while (reverseNode.getNextOrNull() != null) {
-            reverseNode = reverseNode.getNextOrNull();
+        while (dummy.getNextOrNull() != null)
+        {
+            dummy = dummy.getNextOrNull();
             index++;
         }
-        reverseNode = rootOrNull;
-        data = new int[index];
 
-        data[i++] = reverseNode.getData();
-        while (reverseNode.getNextOrNull() != null) {
-            reverseNode = reverseNode.getNextOrNull();
-            data[i++] = reverseNode.getData();
-        }
+        for (int i = index-1; i >= 0; i--) {
+            dummy = rootOrNull;
 
-        for (int j = index-1; j >= 0 ; j--) {
-            if (j == index-1) {
-                newRoot = new Node(data[j]);
+            for (int j = 0; j < i; j++) {
+                dummy = dummy.getNextOrNull();
+            }
+            //System.out.println("dummy : " + dummy.getData());
+            if (i == index-1) {
+                reverseNode = dummy;
+                newRoot = reverseNode;
             } else {
-                append(newRoot, data[j]);
+                dummy2 = new Node(dummy.getData());
+                reverseNode.setNext(dummy2);
+                reverseNode = dummy2;
             }
         }
 
         return newRoot;
     }
 
-    /* interleaveOrNull
-    * 1. root00rNull, root10rNull 내에 데이터를 각각 배열로 보관한다
-    * 2. 새 노드에 추출된 데이터들을 기반으로 첫 번째 노드부터 시작하여 두 번째 노드를 번갈아서 데이터를 넣는다.
-    * 3. 반환한다
-    * */
     public static Node interleaveOrNull(final Node root0OrNull, final Node root1OrNull) {
-        Node dummy;
-        Node newNode;
-        Node newRootNode;
-        int[] arr1;
-        int[] arr2;
-        int[] arr3;
-        int arr1Index = 0;
-        int arr2Index = 0;
-        int arr3Index = 0;
+        Node dummy1 = root0OrNull;
+        Node dummy2 = root1OrNull;
+        Node newNode = null;
+        Node newRootNode = null;
+        Node memoryNode = null;
+        boolean bFirst = false;
 
-        // 1. 두 리스트의 총 개수
-        dummy = root0OrNull;
-        arr1Index++;
-        while(dummy.getNextOrNull() != null) {
-            dummy = dummy.getNextOrNull();
-            arr1Index++;
-        }
-
-        dummy = root1OrNull;
-        arr2Index++;
-        while(dummy.getNextOrNull() != null) {
-            dummy = dummy.getNextOrNull();
-            arr2Index++;
-        }
-
-        arr1 = new int[arr1Index];
-        arr2 = new int[arr2Index];
-
-        // 2. 각 노드의 데이터들을 배열에 저장
-        dummy = root0OrNull;
-        for (int i = 0; i < arr1Index; i++) {
-            arr1[i] = dummy.getData();
-            dummy = dummy.getNextOrNull();
-        }
-
-        dummy = root1OrNull;
-        for (int i = 0; i < arr2Index; i++) {
-            arr2[i] = dummy.getData();
-            dummy = dummy.getNextOrNull();
-        }
-
-        // 3. 각 노드의 데이터들 합치기
-        arr3Index = arr1Index + arr2Index;
-        arr3 = new int[arr3Index];
-        int i = 0;
-        int j = 0;
-        int k = 0;
+        // 1. 두 값을 순서대로 넣기
         while (true) {
-            if (i < arr1Index && j < arr2Index) {
-                arr3[k++] = arr1[i++];
-                arr3[k++] = arr2[j++];
-            } else if (i < arr1Index) {
-                arr3[k++] = arr1[i++];
-            } else if (j < arr2Index) {
-                arr3[k++] = arr2[j++];
+            if (!bFirst) {
+                newNode = new Node(dummy1.getData());
+                memoryNode = newNode;
+                newRootNode = memoryNode;
+
+                newNode = new Node(dummy2.getData());
+                memoryNode.setNext(newNode);
+                memoryNode = newNode;
+
+                bFirst = true;
+            } else if(dummy1.getNextOrNull() != null && dummy2.getNextOrNull() != null) {
+                dummy1 = dummy1.getNextOrNull();
+                newNode = new Node(dummy1.getData());
+                memoryNode.setNext(newNode);
+                memoryNode = newNode;
+
+                dummy2 = dummy2.getNextOrNull();
+                newNode = new Node(dummy2.getData());
+                memoryNode.setNext(newNode);
+                memoryNode = newNode;
+            } else if(dummy1.getNextOrNull() != null) {
+                dummy1 = dummy1.getNextOrNull();
+                newNode = new Node(dummy1.getData());
+                memoryNode.setNext(newNode);
+                memoryNode = newNode;
+            } else if(dummy2.getNextOrNull() != null) {
+                dummy2 = dummy2.getNextOrNull();
+                newNode = new Node(dummy2.getData());
+                memoryNode.setNext(newNode);
+                memoryNode = newNode;
             } else {
                 break;
             }
-        }
-
-        // 4. 합친 데이터를 새로운 리스트로 만들기
-        newNode = new Node(arr3[0]);
-        newRootNode = newNode;
-        for (int l = 1; l < arr3Index; l++) {
-            Node n = new Node(arr3[l]);
-            newNode.setNext(n);
-            newNode = newNode.getNextOrNull();
         }
 
         // 결과 리스트의 첫 번째 노드를 반환
