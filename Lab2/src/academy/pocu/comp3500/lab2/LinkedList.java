@@ -41,6 +41,10 @@ public final class LinkedList {
             return rootOrNull;
         }
 
+        if (rootOrNull == null) {
+            return newNode;
+        }
+
         for (int i = 0; i < index; i++) {
             /*if (dummy.getData() ==) {
                 return rootOrNull;
@@ -210,7 +214,7 @@ public final class LinkedList {
 
     public static int getSize(Node rootOrNull) {
         if (rootOrNull == null) {
-            return -1;
+            return 0;
         }
 
         Node dummy = rootOrNull;

@@ -9,16 +9,14 @@ public class Program {
 
     public static void main(String[] args) {
         {
-            Stack stack = new Stack();
+            Node root = LinkedList.insertAt(null, 0, 10);
 
-            stack.push(20);
-            stack.push(21);
-            stack.push(21);
-            stack.push(21);
-            stack.push(21);
+            System.out.println(root.getData());
+            while (root.getNextOrNull() != null) {
+                root = root.getNextOrNull();
+                System.out.println(root.getData());
+            }
 
-            int pop = stack.pop();
-            System.out.println(pop);
         }
     }
 }
