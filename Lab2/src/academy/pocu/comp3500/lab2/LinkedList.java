@@ -128,20 +128,19 @@ public final class LinkedList {
         int index = 0;
 
         index++;
-        while (dummy.getNextOrNull() != null)
-        {
+        while (dummy.getNextOrNull() != null) {
             dummy = dummy.getNextOrNull();
             index++;
         }
 
-        for (int i = index-1; i >= 0; i--) {
+        for (int i = index - 1; i >= 0; i--) {
             dummy = rootOrNull;
 
             for (int j = 0; j < i; j++) {
                 dummy = dummy.getNextOrNull();
             }
             //System.out.println("dummy : " + dummy.getData());
-            if (i == index-1) {
+            if (i == index - 1) {
                 reverseNode = dummy;
                 newRoot = reverseNode;
             } else {
@@ -174,7 +173,7 @@ public final class LinkedList {
                 memoryNode = newNode;
 
                 bFirst = true;
-            } else if(dummy1.getNextOrNull() != null && dummy2.getNextOrNull() != null) {
+            } else if (dummy1.getNextOrNull() != null && dummy2.getNextOrNull() != null) {
                 dummy1 = dummy1.getNextOrNull();
                 newNode = new Node(dummy1.getData());
                 memoryNode.setNext(newNode);
@@ -184,12 +183,12 @@ public final class LinkedList {
                 newNode = new Node(dummy2.getData());
                 memoryNode.setNext(newNode);
                 memoryNode = newNode;
-            } else if(dummy1.getNextOrNull() != null) {
+            } else if (dummy1.getNextOrNull() != null) {
                 dummy1 = dummy1.getNextOrNull();
                 newNode = new Node(dummy1.getData());
                 memoryNode.setNext(newNode);
                 memoryNode = newNode;
-            } else if(dummy2.getNextOrNull() != null) {
+            } else if (dummy2.getNextOrNull() != null) {
                 dummy2 = dummy2.getNextOrNull();
                 newNode = new Node(dummy2.getData());
                 memoryNode.setNext(newNode);

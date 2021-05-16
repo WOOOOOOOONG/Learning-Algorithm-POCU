@@ -36,7 +36,7 @@ public final class Stack {
         }
         int size = getSize();
         int removeData = peek();
-        LinkedList.removeAt(root, size-1);
+        LinkedList.removeAt(root, size - 1);
 
         return removeData;
     }
