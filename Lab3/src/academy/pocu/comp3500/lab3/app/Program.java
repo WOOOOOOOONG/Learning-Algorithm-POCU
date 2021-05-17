@@ -2,19 +2,34 @@ package academy.pocu.comp3500.lab3.app;
 
 import academy.pocu.comp3500.lab3.MissionControl;
 
+import java.sql.Array;
 import java.util.ArrayList;
 
 public class Program {
 
     public static void main(String[] args) {
-        final int[] altitudes = new int[] { 1, 2, 3, 4, 5, 6, 7, 4, 3, 2 };
+        ArrayList<Integer> altitudes = new ArrayList<>();
+        altitudes.add(1); altitudes.add(2);
+        altitudes.add(3); altitudes.add(4);
+        altitudes.add(5); altitudes.add(6);
+        altitudes.add(7); altitudes.add(8);
 
-        ArrayList<Integer> bounds = MissionControl.findAltitudeTimes(altitudes, 2); // bounds: [ 1, 9 ]
-
-        bounds = MissionControl.findAltitudeTimes(altitudes, 5); // bounds: [ 4 ]
-        for (int i = 0; i < bounds.size(); i++) {
-            System.out.print(bounds.get(i) + " ");
-        }
+        int result = MissionControl.binarySearch(altitudes, 0, altitudes.size() / 2, altitudes.size()-1, 1);
+        System.out.println(result);
+        result = MissionControl.binarySearch(altitudes, 0, altitudes.size() / 2, altitudes.size()-1, 2);
+        System.out.println(result);
+        result = MissionControl.binarySearch(altitudes, 0, altitudes.size() / 2, altitudes.size()-1, 3);
+        System.out.println(result);
+        result = MissionControl.binarySearch(altitudes, 0, altitudes.size() / 2, altitudes.size()-1, 4);
+        System.out.println(result);
+        result = MissionControl.binarySearch(altitudes, 0, altitudes.size() / 2, altitudes.size()-1, 5);
+        System.out.println(result);
+        result = MissionControl.binarySearch(altitudes, 0, altitudes.size() / 2, altitudes.size()-1, 6);
+        System.out.println(result);
+        result = MissionControl.binarySearch(altitudes, 0, altitudes.size() / 2, altitudes.size()-1, 7);
+        System.out.println(result);
+        result = MissionControl.binarySearch(altitudes, 0, altitudes.size() / 2, altitudes.size()-1, 8);
+        System.out.println(result);
 
     }
 }
