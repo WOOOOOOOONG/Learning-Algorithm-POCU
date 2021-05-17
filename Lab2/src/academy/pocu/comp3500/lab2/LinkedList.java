@@ -176,31 +176,6 @@ public final class LinkedList {
         int dummy1Index = 0;
         int dummy2Index = 0;
 
-        lastNode = getOrNull(root0OrNull, dummy1Index++);
-        newRootNode = lastNode;
-        lastNode.setNext(getOrNull(root1OrNull, dummy2Index++));
-        lastNode = lastNode.getNextOrNull();
-        while (true) {
-            if (dummy1Index >= root1Size && dummy2Index >= root2Size) {
-                break;
-            }
-
-            if (dummy1Index < root1Size && dummy2Index < root2Size) {
-                lastNode.setNext(getOrNull(root0OrNull, dummy1Index++));
-                lastNode = lastNode.getNextOrNull();
-                lastNode.setNext(getOrNull(root1OrNull, dummy2Index++));
-                lastNode = lastNode.getNextOrNull();
-            } else if (dummy1Index < root1Size) {
-                lastNode.setNext(getOrNull(root0OrNull, dummy1Index++));
-                lastNode = lastNode.getNextOrNull();
-            } else if (dummy2Index < root2Size) {
-                lastNode.setNext(getOrNull(root1OrNull, dummy2Index++));
-                lastNode = lastNode.getNextOrNull();
-            } else {
-                break;
-            }
-        }
-
         // 결과 리스트의 첫 번째 노드를 반환
         return newRootNode;
     }

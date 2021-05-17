@@ -38,7 +38,44 @@ public final class MissionControl {
         return newArray;
     }
 
-    private static void quickSortRecursive(int[][] arrays, int left, int right) {
+    // 이차원 배열 : [0][i] = 원래 인덱스, [1][i] = 정렬된 인덱스
+    public static int[][] quickSortRecursive(int[] arr, int l, int r) {
+        if (l >= r) {
+            return null;
+        }
+
+        int i = 0;
+        int[][] newArr = new int[2][r + 1];
+
+        int pivotPos = partition(arr, l, r);
+        newArr[0][i] = r;
+        newArr[1][i++] = pivotPos;
+
+        quickSortRecursive(arr, l, pivotPos - 1);
+        quickSortRecursive(arr, pivotPos + 1, r);
+
+        return newArr;
+    }
+
+    public static int partition(int[] arr, int l, int r) {
+        int pivot = arr[r];
+
+        int i = l;
+        for (int j = l; j < r; j++) {
+            if (arr[j] < pivot) {
+                swap(arr, i, j);
+                i++;
+            }
+        }
+        swap(arr, i, r);
+
+        return i;
+    }
+
+    public static void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
     }
 
     /* 이진탐색 해법
