@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Program {
     public static void main(String[] args) {
         int[] arr = {8,7,6,5,4,3,2,1};
-        arr = insertionSort(arr);
+        quickSortRecursive(arr, 0, arr.length-1);
 
         for (int i = 0; i < arr.length; i++) {
             System.out.print(arr[i] + " ");
@@ -80,5 +80,38 @@ public class Program {
         }
 
         return arr;
+    }
+
+    public static void quickSortRecursive(int[] arr, int left, int right) {
+        if (left >= right) {
+            return;
+        }
+
+        int pivotPos = partition(arr, left, right);
+
+        quickSortRecursive(arr, left, pivotPos - 1);
+        quickSortRecursive(arr, pivotPos + 1, right);
+    }
+
+    public static int partition(int[] arr, int left, int right) {
+        int pivot = arr[right];
+
+        int i = left;
+        for (int j = left; j < right; j++) {
+            if (arr[j] < pivot) {
+                swap(arr, i, j);
+                i++;
+            }
+        }
+
+        swap(arr, left, right);
+
+        return pivot;
+    }
+
+    public static void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = arr[i];
     }
 }
