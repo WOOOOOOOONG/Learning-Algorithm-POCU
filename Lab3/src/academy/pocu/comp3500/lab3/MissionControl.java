@@ -9,16 +9,12 @@ public final class MissionControl {
 
     // 퀵 정렬 사용
     public static int findMaxAltitudeTime(final int[] altitudes) {
-        int max = -999999;
-        int maxIndex = -1;
-        for (int i = 0; i < altitudes.length; i++) {
-            if (altitudes[i] > max) {
-                max = altitudes[i];
-                maxIndex = i;
+        for (int i = altitudes.length- 1 ; i > 0; i--) {
+            if (altitudes[i] > altitudes[i - 1]) {
+                return i - 1;
             }
         }
-
-        return maxIndex;
+        return -1;
     }
 
     /* findAltitudeTimes 해법
@@ -39,20 +35,18 @@ public final class MissionControl {
     }
 
     // 이차원 배열 : [0][i] = 원래 인덱스, [1][i] = 정렬된 인덱스
-    public static int[][] quickSortRecursive(int[] arr, int l, int r) {
+    public static int[][] quickSortRecursive(int[][] newArr, int index, int[] arr, int l, int r) {
         if (l >= r) {
             return null;
         }
 
-        int i = 0;
-        int[][] newArr = new int[2][r + 1];
 
+        newArr[0][index] = r;
         int pivotPos = partition(arr, l, r);
-        newArr[0][i] = r;
-        newArr[1][i++] = pivotPos;
+        newArr[1][index++] = pivotPos;
 
-        quickSortRecursive(arr, l, pivotPos - 1);
-        quickSortRecursive(arr, pivotPos + 1, r);
+        quickSortRecursive(newArr, index, arr, l, pivotPos - 1);
+        quickSortRecursive(newArr, index, arr, pivotPos + 1, r);
 
         return newArr;
     }
