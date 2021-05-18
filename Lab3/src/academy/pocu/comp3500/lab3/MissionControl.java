@@ -14,11 +14,11 @@ public final class MissionControl {
             }
 
             if (i == 1) {
-                return altitudes[0];
+                return 0;
             }
         }
 
-        return altitudes[altitudes.length - 1];
+        return altitudes.length-1;
     }
 
     public static ArrayList<Integer> findAltitudeTimes(final int[] altitudes, final int targetAltitude) {
@@ -30,6 +30,9 @@ public final class MissionControl {
             }
 
             if (altitudes[i] == targetAltitude) {
+                if (i == 0) {
+                    break;
+                }
                 newArray.add(i);
             }
         }
@@ -40,6 +43,9 @@ public final class MissionControl {
             }
 
             if (altitudes[i] == targetAltitude) {
+                if (i == altitudes.length - 1) {
+                    break;
+                }
                 newArray.add(i);
             }
         }
