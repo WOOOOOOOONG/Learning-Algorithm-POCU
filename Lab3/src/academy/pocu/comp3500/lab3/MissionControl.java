@@ -58,68 +58,30 @@ public final class MissionControl {
         }
     }
 
-    // 원하는 값 찾는법 : 퀵 탐색으로 왼쪽, 오른쪽 비교하며 찾는 값 나올 때까지 반복 -> 다 찾은 후 정렬
+    // 원하는 값 찾는법 : 배열 중 가장 큰 값을 찾고, 그 값을 기준으로 왼쪽/오른쪽에서 타겟을 찾아 새 ArrayList에 추가 후 반환한다
     public static ArrayList<Integer> findAltitudeTimes(final int[] altitudes, final int targetAltitude) {
-        /*
-        ArrayList<Integer> newArray = new ArrayList<>();
-
-        for (int i = 0; i < altitudes.length; i++) {
-            if (targetAltitude < altitudes[i]) {
-                break;
-            }
-
-            if (altitudes[i] == targetAltitude) {
-                if (i == 0) {
-                    break;
-                }
-                newArray.add(i);
-            }
-        }
-
-        for (int i = altitudes.length - 1; i >= 0; i--) {
-            if (targetAltitude < altitudes[i]) {
-                break;
-            }
-
-            if (altitudes[i] == targetAltitude) {
-                if (i == altitudes.length - 1) {
-                    break;
-                }
-                newArray.add(i);
-            }
-        }
-        */
-
         ArrayList<Integer> newArray = new ArrayList<>();
         MissionControl maxIndex = new MissionControl();
         int max = -9999999;
+
+        // 1. 가장 큰 인덱스 찾기
         quickSearchRecursive(altitudes, altitudes.length / 2, max, maxIndex, 0, altitudes.length - 1);
-
+        // 2. 가장 큰 인덱스 기준 왼쪽에서 목표값 찾기
         partition2(altitudes, newArray, 0, 0, maxIndex.maxIndex / 2, maxIndex.maxIndex, targetAltitude);
-
-        System.out.println("오른쪽");
+        // 3. 가장 큰 인덱스 기준 오른쪽에서 목표값 찾기
         partition2(altitudes, newArray, 1, maxIndex.maxIndex + 1, (maxIndex.maxIndex + altitudes.length) / 2, altitudes.length - 1, targetAltitude);
+
+        // 4. 찾은 값 반환
         return newArray;
-    }
-
-    public static void quickSearchRecursive2(final int[] altitudes, ArrayList<Integer> newArray, int l, int mid, int r, int find) {
-        if (l >= r) {
-            return;
-        }
-
-        partition2(altitudes, newArray, 0, l, mid / 2, mid - 1, find);
-        partition2(altitudes, newArray, 1, mid + 1, mid + ((r - mid) / 2), r, find);
     }
 
     // version = 1 : 오른쪽 값 찾을 때, version = 0 : 왼쪽 값 찾을 때
     public static void partition2(final int[] altitudes, ArrayList<Integer> newArray, int version, int l, int mid, int r, int find) {
-        System.out.println(l + ", " + mid + ", " + r + ", " + find);
         if (l > r) {
             return;
         }
         if (version == 0) {
             if (altitudes[mid] == find) {
-                System.out.println("왔냐 " + mid);
                 newArray.add(mid);
             } else if (altitudes[mid] > find) {
                 partition2(altitudes, newArray, 0, l, mid - ((r - l) / 2), mid - 1, find);
@@ -128,7 +90,6 @@ public final class MissionControl {
             }
         } else if (version == 1) {
             if (altitudes[mid] == find) {
-                System.out.println("왔냐 " + mid);
                 newArray.add(mid);
             } else if (altitudes[mid] > find) {
                 partition2(altitudes, newArray, 1, mid + 1, mid + ((r - mid + 1) / 2), r, find);

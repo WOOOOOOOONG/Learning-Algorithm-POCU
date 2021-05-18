@@ -1,253 +1,174 @@
 package academy.pocu.comp3500.assignment1;
 
-import academy.pocu.comp3500.assignment1.pba.GameStat;
 import academy.pocu.comp3500.assignment1.pba.Player;
+import academy.pocu.comp3500.assignment1.pba.GameStat;
 
-public class PocuBasketballAssociation {
+public final class PocuBasketballAssociation {
     private PocuBasketballAssociation() {
     }
 
-    /* GameStat 정보를 이용해 Player 내 선수별 경기 점수를 구하기
-    * 1. 플레이어 수만큼 반복
-    * 2. 플레이어가 출전한 경기를 모두 찾아 득점수, 어시스트수, 패스수, 슛 성공률 합 계산 및 출전한 경기 수 저장
-    * 3. 플레이어의 평균 득점, 어시스트, 패스, 슛 성공률을 outPlayers에 저장
-    * 4. 모든 플레이어를 대상으로 위 절차를 실행
+    /* processGameStats : 게임과 플레이어들이 주어질 때, 게임 내용을 바탕으로 플레이어들의 정보를 넣는 함수
+    *  1. gameStats 안에 내용을 바탕으로 선수별 점수 취합
+    *     1게임마다 해당 선수의 정보를 넣고, 평균을 낸다 -> X
+    *     선수별로 어시스트, 골 수, 패스 수의 합을 낸다 -> 어떻게 ?
+    *     플레이어 for문 먼저 -> 각각의 sum 계산할 변수 선언 -> gameStats for문 돌리면서 sum 변수에 합
+    *  2. gameStats의 마지막까지 반복
     * */
     public static void processGameStats(final GameStat[] gameStats, final Player[] outPlayers) {
-        String playerNames[]            = new String[outPlayers.length];
-        int playerNamesIndex            = 0;
-        int playersPoints[]             = new int[outPlayers.length];
-        int playersAssists[]            = new int[outPlayers.length];
-        int playersPasses[]             = new int[outPlayers.length];
-        // int playersShootingPercentage[] = new int[outPlayers.length];
-        int playersGoals[]              = new int[outPlayers.length];
-        int playersTryGoals[]           = new int[outPlayers.length];
-        int playersVisitGame[]          = new int[outPlayers.length];
-
-        // 플레이어 이름 저장
+        // 1. 플레이어 이름 선정 -> O(n^2)
+        int playerIndex = 0;
         for (int i = 0; i < gameStats.length; i++) {
-            boolean bIsSaved = false;
-            for (int j = 0; j < playerNames.length; j++) {
-                // System.out.println(i + ", " + j + ", " + playerNames.length);
-                if (playerNames[j] != null) {
-                    if (gameStats[i].getPlayerName().equals(playerNames[j])) {
-                        bIsSaved = true;
-                        break;
-                    }
+            if (playerIndex == outPlayers.length) {
+                break;
+            }
+
+            String playerName = gameStats[i].getPlayerName();
+            boolean bOverlap = false;
+            for (int j = 0; j < outPlayers.length; j++) {
+                if (playerName.equals(outPlayers[j].getName())) {
+                    bOverlap = true;
+                    break;
                 }
             }
 
-            if (!bIsSaved) {
-                playerNames[playerNamesIndex++] = gameStats[i].getPlayerName();
+            if (!bOverlap) {
+                outPlayers[playerIndex++].setName(playerName);
             }
         }
 
-        for (int i = 0; i < playerNames.length; i++) {
+        // 각각의 합 계산 -> O(n^2)
+        for (int i = 0; i < outPlayers.length; i++) {
+            String name = outPlayers[i].getName();
+            int scoreSum = 0;
+            int assistSum = 0;
+            int passSum = 0;
+            int goalAttemptSum = 0;
+            int goalSum = 0;
+            int gameCount = 0;
+
             for (int j = 0; j < gameStats.length; j++) {
-                if (playerNames[i].equals(gameStats[j].getPlayerName())) {
-                    playersPoints[i]   += gameStats[j].getPoints();
-                    playersAssists[i]  += gameStats[j].getAssists();
-                    playersPasses[i]   += gameStats[j].getNumPasses();
-                    playersGoals[i]    += gameStats[j].getGoals();
-                    playersTryGoals[i] += gameStats[j].getGoalAttempts();
-                    playersVisitGame[i]++;
+                if (gameStats[j].getPlayerName().equals(name)) {
+                    scoreSum += gameStats[j].getPoints();
+                    assistSum += gameStats[j].getAssists();
+                    passSum += gameStats[j].getNumPasses();
+                    goalAttemptSum += gameStats[j].getGoalAttempts();
+                    goalSum += gameStats[j].getGoals();
+                    gameCount++;
                 }
             }
-        }
 
-        for (int i = 0; i < playerNames.length; i++) {
-            String playerName      = playerNames[i];
-            int avgScore           = playersPoints[i] / playersVisitGame[i];
-            int avgAssist          = playersAssists[i] / playersVisitGame[i];
-            int avgPass            = playersPasses[i] / playersVisitGame[i];
-            int shootingPercentage = 100 * playersGoals[i] / playersTryGoals[i];
-
-            outPlayers[i] = new Player(playerName, avgScore, avgAssist, avgPass, shootingPercentage);
+            outPlayers[i].setPointsPerGame(scoreSum / gameCount);
+            outPlayers[i].setAssistsPerGame(assistSum / gameCount);
+            outPlayers[i].setPassesPerGame(passSum / gameCount);
+            outPlayers[i].setShootingPercentage(100 * goalSum / goalAttemptSum);
         }
     }
 
-    /* 제공하는 players중 평균 점수가 targetPoints와 가장 비슷한 플레이어 객체를 반환하기
-    * 1. min 변수에 플레이어의 평균 점수와 targetPoints와의 차이를 계산하며, 해당 인덱스를 minIndex에 저장
-    * 2. 해당 인덱스의 플레이어를 반환
+    /* findPlayerPointPerGame : 플레이어 중 목표 점수와 가장 가까운 선수 반환 -> O(N)
+    *  1.
     * */
     public static Player findPlayerPointsPerGame(final Player[] players, int targetPoints) {
-        int min = 999999;
-        int minIndex = 0;
-
+        int diff = 999999;
+        int topPlayerIndex = -1;
         for (int i = 0; i < players.length; i++) {
-            if (players[i].getPointsPerGame() >= targetPoints) {
-                if (players[i].getPointsPerGame() - targetPoints <= min) {
-                    min = players[i].getPointsPerGame() - targetPoints;
-                    minIndex = i;
+            if (players[i].getPointsPerGame() > targetPoints) {
+                if (players[i].getPointsPerGame() - targetPoints <= diff) {
+                    diff = players[i].getPointsPerGame() - targetPoints;
+                    topPlayerIndex = i;
+                } else {
+                    break;
                 }
             } else {
-                if (targetPoints - players[i].getPointsPerGame() <= min) {
-                    min = targetPoints - players[i].getPointsPerGame();
-                    minIndex = i;
+                if (targetPoints - players[i].getPointsPerGame() <= diff) {
+                    diff = targetPoints - players[i].getPointsPerGame();
+                    topPlayerIndex = i;
+                } else {
+                    break;
                 }
             }
         }
 
-        return players[minIndex];
+        return players[topPlayerIndex];
     }
 
-    /* 제공하는 players중 평균 점수와 targetShootingPercentage가 가장 비슷한 플레이어 객체를 반환하기
-    * */
     public static Player findPlayerShootingPercentage(final Player[] players, int targetShootingPercentage) {
-        int min = 999999;
-        int minIndex = 0;
-
+        int diff = 999999;
+        int topPlayerIndex = -1;
         for (int i = 0; i < players.length; i++) {
-            if (players[i].getShootingPercentage() >= targetShootingPercentage) {
-                if (players[i].getShootingPercentage() - targetShootingPercentage <= min) {
-                    min = players[i].getShootingPercentage() - targetShootingPercentage;
-                    minIndex = i;
+            if (players[i].getShootingPercentage() > targetShootingPercentage) {
+                if (players[i].getShootingPercentage() - targetShootingPercentage <= diff) {
+                    diff = players[i].getShootingPercentage() - targetShootingPercentage;
+                    topPlayerIndex = i;
+                } else {
+                    break;
                 }
             } else {
-                if (targetShootingPercentage - players[i].getShootingPercentage() <= min) {
-                    min = targetShootingPercentage - players[i].getShootingPercentage();
-                    minIndex = i;
+                if (targetShootingPercentage - players[i].getShootingPercentage() <= diff) {
+                    diff = targetShootingPercentage - players[i].getShootingPercentage();
+                    topPlayerIndex = i;
+                } else {
+                    break;
                 }
             }
         }
 
-        return players[minIndex];
+        return players[topPlayerIndex];
     }
 
-    /* 팀워크(평균 패스 * 어시스트)가 뛰어난 선수 3인방의 팀워크 점수 합을 반환하며, outPlayers에 해당 선수 정보 넣기
-    * 1. 뛰어난 3인방 구하기
-    * 2. outPlayers에 3인방 대입
-    * 3. 3인방의 팀워크 합 반환
+    /* find3ManDreamTeam : 가장 뛰어난 선수들(패스 합 * 3명 중 어시스트 중 최솟값)이 모인 팀을 반환하는 함수
+    *  1. 플레이어 3명 조합의 경우의 수만큼 반복
+    *  2. 선출된 3명의 팀워크를 계산하고, 가장 뛰어난 팀워크의 팀 인덱스를 저장
     * */
-    public static long find3ManDreamTeam(final Player[] players, final Player[] outPlayers) {
-        int[][][] teamworks = new int[players.length][players.length][players.length];
-        int[] top1  = {-1, -1, -1};
-        int sumPass     = 0;
-        int minAssist   = 0;
-        int result      = 0;
-        int max = 0;
+    public static long find3ManDreamTeam(final Player[] players, final Player[] outPlayers, final Player[] scratch) {
+        long maxTeamwork = -999999;
+        int player1Index = -1;
+        int player2Index = -1;
+        int player3Index = -1;
 
-        for (int i = 0; i < players.length; i++) {
-            for (int j = 0; j < players.length; j++) {
-                for (int k = 0; k < players.length; k++) {
-                    if (i == j || i == k || j == k) {
-                        continue;
+        for (int i = 0; i < players.length - 2; i++) {
+            for (int j = i + 1; j < players.length; j++) {
+                for (int k = j + 1; k < players.length; k++) {
+                    long teamwork = 0;
+                    int passSum = 0;
+                    int assistMin = 999999;
+
+                    passSum += players[i].getPassesPerGame();
+                    passSum += players[j].getPassesPerGame();
+                    passSum += players[k].getPassesPerGame();
+
+                    if (players[i].getAssistsPerGame() < assistMin) {
+                        assistMin = players[i].getAssistsPerGame();
                     }
-                    sumPass = players[i].getPassesPerGame() + players[j].getPassesPerGame() + players[k].getPassesPerGame();
-                    minAssist = min(players[i].getAssistsPerGame(), players[j].getAssistsPerGame(), players[k].getAssistsPerGame());
-
-                    teamworks[i][j][k] = sumPass * minAssist;
-                }
-            }
-        }
-
-        for (int i = 0; i < players.length; i++) {
-            max = 0;
-            for (int j = 0; j < players.length; j++) {
-                for (int k = 0; k < players.length; k++) {
-                    if (i == j || i == k || j == k) {
-                        continue;
+                    if (players[j].getAssistsPerGame() < assistMin) {
+                        assistMin = players[j].getAssistsPerGame();
+                    }
+                    if (players[k].getAssistsPerGame() < assistMin) {
+                        assistMin = players[k].getAssistsPerGame();
                     }
 
-                    if (teamworks[i][j][k] > max) {
-                        max = teamworks[i][j][k];
-                        top1[0] = i;
-                        top1[1] = j;
-                        top1[2] = k;
+                    teamwork = passSum * assistMin;
+                    if (maxTeamwork < teamwork) {
+                        player1Index = i;
+                        player2Index = j;
+                        player3Index = k;
+                        maxTeamwork = teamwork;
                     }
                 }
             }
         }
 
-        outPlayers[0] = players[top1[0]];
-        outPlayers[1] = players[top1[1]];
-        outPlayers[2] = players[top1[2]];
+        outPlayers[0] = players[player1Index];
+        outPlayers[1] = players[player2Index];
+        outPlayers[2] = players[player3Index];
 
-        return teamworks[top1[0]][top1[1]][top1[2]];
+        return maxTeamwork;
     }
 
-    /* k명으로 구성된 드림팀
-    * 1. 뛰어난 k인방 구하기
-    *  1-1) 저장된 배열에 해당하지 않으면서 가장 큰 수 저장
-    * 2. outPLayers에 k인방 대입
-    * 3. k인방의 팀워크 합 변환
-    * */
-
-    public static long findDreamTeam(final Player[] players, int k, final Player[] outPlayers) {
-        int[][] teamworks = new int[players.length][k+1];
-        int[] teamworkIndex;
-        int[] top1  = {-1, -1, -1};
-        int sumPass     = 0;
-        int minAssist   = 0;
-        int result      = 0;
-        int max = 0;
-/*
-        for (int i = 0; i < players.length; i++) {
-            for (int j = 0; j < players.length; j++) {
-                for (int l = 0; l < players.length; l++) {
-                    if (i == j || i == l || j == l) {
-                        continue;
-                    }
-                    sumPass = players[i].getPassesPerGame() + players[j].getPassesPerGame() + players[k].getPassesPerGame();
-                    minAssist = min(players[i].getAssistsPerGame(), players[j].getAssistsPerGame(), players[k].getAssistsPerGame());
-
-                    teamworks[i][j][k] = sumPass * minAssist;
-                    teamworks[teamworkIndex][0] = i;
-                }
-            }
-        }
-
-        for (int i = 0; i < players.length; i++) {
-            max = 0;
-            for (int j = 0; j < players.length; j++) {
-                for (int k = 0; k < players.length; k++) {
-                    if (i == j || i == k || j == k) {
-                        continue;
-                    }
-
-                    if (teamworks[i][j][k] > max) {
-                        max = teamworks[i][j][k];
-                        top1[0] = i;
-                        top1[1] = j;
-                        top1[2] = k;
-                    }
-                }
-            }
-        }
-
-        outPlayers[0] = players[top1[0]];
-        outPlayers[1] = players[top1[1]];
-        outPlayers[2] = players[top1[2]];
-*/
+    public static long findDreamTeam(final Player[] players, int k, final Player[] outPlayers, final Player[] scratch) {
         return -1;
     }
 
-    public static int min(int num1, int num2, int num3) {
-        int min = 999999;
-
-        if (min > num1) {
-            min = num1;
-        }
-        if (min > num2) {
-            min = num2;
-        }
-        if (min > num3) {
-            min = num3;
-        }
-
-        return min;
-    }
-
-    public static int contains(int[] numbers, int findNumber) {
-        for (int i = 0; i < numbers.length; i++) {
-            if (numbers[i] == findNumber) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public static int findDreamTeamSize(final Player[] players) {
+    public static int findDreamTeamSize(final Player[] players, final Player[] scratch) {
         return -1;
     }
 }
