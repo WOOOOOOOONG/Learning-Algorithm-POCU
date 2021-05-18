@@ -47,9 +47,6 @@ public final class MissionControl {
             quickSearchRecursive(altitudes, mid + ((r - mid + 1) / 2), max, maxIndex, mid + 1, r);
         }
     }
-    // mid를 절반씩 증가/감소하는 방법
-    // 10까지 인덱스 존재. 5부터 시작. 5 -> 7 -> 9 : max + ((length - max + 1) / 2)
-    // 6,7,7    7 -
 
     public static int partition(final int[] altitudes, int mid) {
         if (mid - 1 >= 0 && altitudes[mid] < altitudes[mid - 1]) {
@@ -61,7 +58,9 @@ public final class MissionControl {
         }
     }
 
+    // 원하는 값 찾는법 : 퀵 탐색으로 왼쪽, 오른쪽 비교하며 찾는 값 나올 때까지 반복 -> 다 찾은 후 정렬
     public static ArrayList<Integer> findAltitudeTimes(final int[] altitudes, final int targetAltitude) {
+        /*
         ArrayList<Integer> newArray = new ArrayList<>();
 
         for (int i = 0; i < altitudes.length; i++) {
@@ -89,7 +88,53 @@ public final class MissionControl {
                 newArray.add(i);
             }
         }
+        */
 
+        ArrayList<Integer> newArray = new ArrayList<>();
+        MissionControl maxIndex = new MissionControl();
+        int max = -9999999;
+        quickSearchRecursive(altitudes, altitudes.length / 2, max, maxIndex, 0, altitudes.length - 1);
+
+        partition2(altitudes, newArray, 0, 0, maxIndex.maxIndex / 2, maxIndex.maxIndex, targetAltitude);
+
+        System.out.println("오른쪽");
+        partition2(altitudes, newArray, 1, maxIndex.maxIndex + 1, (maxIndex.maxIndex + altitudes.length) / 2, altitudes.length - 1, targetAltitude);
         return newArray;
+    }
+
+    public static void quickSearchRecursive2(final int[] altitudes, ArrayList<Integer> newArray, int l, int mid, int r, int find) {
+        if (l >= r) {
+            return;
+        }
+
+        partition2(altitudes, newArray, 0, l, mid / 2, mid - 1, find);
+        partition2(altitudes, newArray, 1, mid + 1, mid + ((r - mid) / 2), r, find);
+    }
+
+    // version = 1 : 오른쪽 값 찾을 때, version = 0 : 왼쪽 값 찾을 때
+    public static void partition2(final int[] altitudes, ArrayList<Integer> newArray, int version, int l, int mid, int r, int find) {
+        System.out.println(l + ", " + mid + ", " + r + ", " + find);
+        if (l > r) {
+            return;
+        }
+        if (version == 0) {
+            if (altitudes[mid] == find) {
+                System.out.println("왔냐 " + mid);
+                newArray.add(mid);
+            } else if (altitudes[mid] > find) {
+                partition2(altitudes, newArray, 0, l, mid - ((r - l) / 2), mid - 1, find);
+            } else if (altitudes[mid] < find) {
+                partition2(altitudes, newArray, 0, mid + 1, mid + ((r - mid + 1) / 2), r, find);
+            }
+        } else if (version == 1) {
+            if (altitudes[mid] == find) {
+                System.out.println("왔냐 " + mid);
+                newArray.add(mid);
+            } else if (altitudes[mid] > find) {
+                partition2(altitudes, newArray, 1, mid + 1, mid + ((r - mid + 1) / 2), r, find);
+            } else if (altitudes[mid] < find) {
+                partition2(altitudes, newArray, 1, l, mid - ((r - l) / 2), mid - 1, find);
+            }
+        }
     }
 }
