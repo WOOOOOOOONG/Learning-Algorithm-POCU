@@ -7,17 +7,10 @@ import java.util.ArrayList;
 
 public class Program {
     public static void main(String[] args) {
-        int[] arr = {5,4,3,2,1};
-        int[][] newArr = new int[2][arr.length];
-        int[][] arr2 = MissionControl.quickSortRecursive(newArr, 0, arr, 0, arr.length-1);
+        final int[] altitudes = new int[] { 1, 2, 3, 4, 5, 6, 7, 4, 3, 2 };
 
-        for (int i = 0; i < arr.length; i++) {
-            System.out.println(arr[i] + " ");
-        }
-
-        for (int i = 0; i < arr.length; i++) {
-            System.out.println("index0 : " + arr2[0][i] + ", index1 : " + arr2[1][i]);
-        }
+        final int maxAltitudeTime = MissionControl.findMaxAltitudeTime(altitudes); // maxAltitudeTime: 6
+        System.out.println(maxAltitudeTime);
     }
 
     public static void puff(int n, int a, int b)

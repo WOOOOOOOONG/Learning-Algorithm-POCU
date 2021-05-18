@@ -11,7 +11,7 @@ public final class MissionControl {
     public static int findMaxAltitudeTime(final int[] altitudes) {
         for (int i = altitudes.length- 1 ; i > 0; i--) {
             if (altitudes[i] > altitudes[i - 1]) {
-                return i - 1;
+                return i;
             }
         }
         return -1;
