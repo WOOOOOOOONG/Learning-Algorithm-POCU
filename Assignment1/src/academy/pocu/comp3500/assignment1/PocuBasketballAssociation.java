@@ -244,7 +244,7 @@ public final class PocuBasketballAssociation {
     }
 
     public static int strcmp(String stat1, String stat2) {
-        for (int i = stat1.length() - 1; i >= 0; i--) {
+        for (int i = 0; i < stat1.length() - 1; i++) {
             if (stat1.charAt(i) > stat2.charAt(i)) {
                 return -1;
             } else if (stat1.charAt(i) < stat2.charAt(i)) {
