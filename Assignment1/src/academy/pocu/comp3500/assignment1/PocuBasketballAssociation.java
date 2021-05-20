@@ -7,13 +7,6 @@ public final class PocuBasketballAssociation {
     private PocuBasketballAssociation() {
     }
 
-    /* processGameStats : 게임과 플레이어들이 주어질 때, 게임 내용을 바탕으로 플레이어들의 정보를 넣는 함수
-    *  1. gameStats 안에 내용을 바탕으로 선수별 점수 취합
-    *     1게임마다 해당 선수의 정보를 넣고, 평균을 낸다 -> X
-    *     선수별로 어시스트, 골 수, 패스 수의 합을 낸다 -> 어떻게 ?
-    *     플레이어 for문 먼저 -> 각각의 sum 계산할 변수 선언 -> gameStats for문 돌리면서 sum 변수에 합
-    *  2. gameStats의 마지막까지 반복
-    * */
     public static void processGameStats(final GameStat[] gameStats, final Player[] outPlayers) {
         // 1. 플레이어 이름 선정 -> O(n^2)
         int playerIndex = 0;
@@ -64,9 +57,6 @@ public final class PocuBasketballAssociation {
         }
     }
 
-    /* findPlayerPointPerGame : 플레이어 중 목표 점수와 가장 가까운 선수 반환 -> O(N)
-    *  1.
-    * */
     public static Player findPlayerPointsPerGame(final Player[] players, int targetPoints) {
         int diff = 999999;
         int topPlayerIndex = -1;
@@ -115,10 +105,6 @@ public final class PocuBasketballAssociation {
         return players[topPlayerIndex];
     }
 
-    /* find3ManDreamTeam : 가장 뛰어난 선수들(패스 합 * 3명 중 어시스트 중 최솟값)이 모인 팀을 반환하는 함수
-    *  1. 플레이어 3명 조합의 경우의 수만큼 반복
-    *  2. 선출된 3명의 팀워크를 계산하고, 가장 뛰어난 팀워크의 팀 인덱스를 저장
-    * */
     public static long find3ManDreamTeam(final Player[] players, final Player[] outPlayers, final Player[] scratch) {
         long maxTeamwork = -999999;
         int player1Index = -1;
