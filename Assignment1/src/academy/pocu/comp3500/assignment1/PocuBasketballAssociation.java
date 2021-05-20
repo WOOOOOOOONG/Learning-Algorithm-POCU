@@ -8,6 +8,7 @@ public final class PocuBasketballAssociation {
     }
 
     public static void processGameStats(final GameStat[] gameStats, final Player[] outPlayers) {
+        /*
         // 1. 플레이어 이름 선정 -> O(n^2)
         int playerIndex = 0;
         for (int i = 0; i < gameStats.length; i++) {
@@ -54,6 +55,62 @@ public final class PocuBasketballAssociation {
             outPlayers[i].setAssistsPerGame(assistSum / gameCount);
             outPlayers[i].setPassesPerGame(passSum / gameCount);
             outPlayers[i].setShootingPercentage(100 * goalSum / goalAttemptSum);
+        }
+        */
+
+        // 1. ID순으로 게임을 정렬
+        gameStateRecursiveQuickSort(gameStats, 0, gameStats.length - 1);
+
+        // 2. ID별로 각각을 종합하여 계산
+        int playerCount = 0;
+        int scoreSum = 0;
+        int assistSum = 0;
+        int passSum = 0;
+        int goalAttemptSum = 0;
+        int goalSum = 0;
+        int gameCount = 0;
+        String curPlayerName = gameStats[0].getPlayerName();
+        for (int i = 0; i < gameStats.length; i++) {
+            if (!curPlayerName.equals(gameStats[i].getPlayerName())) {
+                outPlayers[playerCount].setName(curPlayerName);
+                outPlayers[playerCount].setPointsPerGame(scoreSum / gameCount);
+                outPlayers[playerCount].setAssistsPerGame(assistSum / gameCount);
+                outPlayers[playerCount].setPassesPerGame(passSum / gameCount);
+                outPlayers[playerCount].setShootingPercentage(100 * goalSum / goalAttemptSum);
+
+                scoreSum = 0;
+                assistSum = 0;
+                passSum = 0;
+                goalAttemptSum = 0;
+                goalSum = 0;
+                gameCount = 0;
+                playerCount++;
+                curPlayerName = gameStats[i].getPlayerName();
+            }
+
+            scoreSum += gameStats[i].getPoints();
+            assistSum += gameStats[i].getAssists();
+            passSum += gameStats[i].getNumPasses();
+            goalAttemptSum += gameStats[i].getGoalAttempts();
+            goalSum += gameStats[i].getGoals();
+            gameCount++;
+
+            if (i == gameStats.length - 1) {
+                outPlayers[playerCount].setName(curPlayerName);
+                outPlayers[playerCount].setPointsPerGame(scoreSum / gameCount);
+                outPlayers[playerCount].setAssistsPerGame(assistSum / gameCount);
+                outPlayers[playerCount].setPassesPerGame(passSum / gameCount);
+                outPlayers[playerCount].setShootingPercentage(100 * goalSum / goalAttemptSum);
+
+                scoreSum = 0;
+                assistSum = 0;
+                passSum = 0;
+                goalAttemptSum = 0;
+                goalSum = 0;
+                gameCount = 0;
+                playerCount++;
+                curPlayerName = gameStats[i].getPlayerName();
+            }
         }
     }
 
@@ -156,5 +213,51 @@ public final class PocuBasketballAssociation {
 
     public static int findDreamTeamSize(final Player[] players, final Player[] scratch) {
         return -1;
+    }
+
+    public static void gameStateRecursiveQuickSort(final GameStat[] gamestats, int left, int right) {
+        if (left >= right) {
+            return;
+        }
+
+        int pivotPos = gameStatePartition(gamestats, left, right);
+
+        gameStateRecursiveQuickSort(gamestats, left, pivotPos - 1);
+        gameStateRecursiveQuickSort(gamestats, pivotPos + 1, right);
+    }
+
+    public static int gameStatePartition(GameStat[] gamestats, int left, int right) {
+        String pivot = gamestats[right].getPlayerName();
+
+        int i = (left - 1);
+        for (int j = left; j < right; ++j) {
+            if (strcmp(gamestats[j].getPlayerName(), pivot) == 1) {
+                ++i;
+                swap(gamestats, i, j);
+            }
+        }
+
+        int pivotPos = i + 1;
+        swap(gamestats, pivotPos, right);
+
+        return pivotPos;
+    }
+
+    public static int strcmp(String stat1, String stat2) {
+        for (int i = stat1.length() - 1; i >= 0; i--) {
+            if (stat1.charAt(i) > stat2.charAt(i)) {
+                return -1;
+            } else if (stat1.charAt(i) < stat2.charAt(i)) {
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+
+    public static void swap(GameStat[] gamestats, int left, int right) {
+        GameStat p = gamestats[left];
+        gamestats[left] = gamestats[right];
+        gamestats[right] = p;
     }
 }
