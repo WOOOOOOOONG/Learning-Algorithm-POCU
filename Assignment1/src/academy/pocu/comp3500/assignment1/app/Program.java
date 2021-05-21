@@ -22,8 +22,8 @@ public class Program {
         Player[] scratch = new Player[k];
 
         long maxTeamwork = PocuBasketballAssociation.findDreamTeam(players, k, outPlayers, scratch); // maxTeamwork: 171, outPlayers: [ Player 6, Player 5, Player 2, Player 7 ]
-
-        printPlayers(players);
+        System.out.println("maxTeamwork : " + maxTeamwork);
+        printPlayers(outPlayers);
     }
 
     public static void printGameStat(GameStat[] gameStat) {

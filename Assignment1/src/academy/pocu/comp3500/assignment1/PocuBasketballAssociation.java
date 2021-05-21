@@ -208,7 +208,27 @@ public final class PocuBasketballAssociation {
     }
 
     public static long findDreamTeam(final Player[] players, int k, final Player[] outPlayers, final Player[] scratch) {
-        return -1;
+        int maxTeamwork = -9999999;
+        recursiveQuickSort(players, 0, players.length - 1);
+
+        for (int i = 0; i < players.length - k; i++) {
+            int sum = 0;
+            Player[] players2 = players;
+
+            recursiveQuickSort2(players2, 0, players2.length - 1);
+            for (int j = players2.length - 1; j >= players2.length - 1 - k; j--) {
+                sum += players2[j].getPassesPerGame();
+            }
+            if (maxTeamwork < sum) {
+                maxTeamwork = sum * players[i].getAssistsPerGame();
+                for (int j = 0; j < k; j++) {
+                    outPlayers[j] = players[i + j];
+                }
+            }
+
+        }
+
+        return maxTeamwork;
     }
 
     public static int findDreamTeamSize(final Player[] players, final Player[] scratch) {
@@ -255,9 +275,71 @@ public final class PocuBasketballAssociation {
         return 0;
     }
 
-    public static void swap(GameStat[] gamestats, int left, int right) {
+    public static void swap(final GameStat[] gamestats, int left, int right) {
         GameStat p = gamestats[left];
         gamestats[left] = gamestats[right];
         gamestats[right] = p;
+    }
+
+    public static void recursiveQuickSort(final Player[] players, int left, int right) {
+        if (left <= right) {
+            return;
+        }
+
+        int pivotPos = partition(players, left, right);
+
+        recursiveQuickSort(players, left, pivotPos - 1);
+        recursiveQuickSort(players, pivotPos + 1, right);
+    }
+
+    public static int partition(final Player[] players, int left, int right) {
+        int pivot = players[right].getAssistsPerGame();
+
+        int i = left - 1;
+        for (int j = left; j < right; j++) {
+            if (pivot > players[j].getAssistsPerGame()) {
+                ++i;
+                playerSwap(players, i, j);
+            }
+        }
+
+        int pivotPos = i + 1;
+        playerSwap(players, pivotPos, right);
+
+        return pivotPos;
+    }
+
+    public static void playerSwap(final Player[] players, int left, int right) {
+        Player p = players[left];
+        players[left] = players[right];
+        players[right] = p;
+    }
+
+    public static void recursiveQuickSort2(final Player[] players, int left, int right) {
+        if (left <= right) {
+            return;
+        }
+
+        int pivotPos = partition2(players, left, right);
+
+        recursiveQuickSort2(players, left, pivotPos - 1);
+        recursiveQuickSort2(players, pivotPos + 1, right);
+    }
+
+    public static int partition2(final Player[] players, int left, int right) {
+        int pivot = players[right].getPassesPerGame();
+
+        int i = left - 1;
+        for (int j = left; j < right; j++) {
+            if (pivot > players[j].getPassesPerGame()) {
+                ++i;
+                playerSwap(players, i, j);
+            }
+        }
+
+        int pivotPos = i + 1;
+        playerSwap(players, pivotPos, right);
+
+        return pivotPos;
     }
 }
