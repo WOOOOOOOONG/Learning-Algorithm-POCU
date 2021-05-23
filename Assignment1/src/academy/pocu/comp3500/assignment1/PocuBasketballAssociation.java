@@ -208,24 +208,138 @@ public final class PocuBasketballAssociation {
     }
 
     public static long findDreamTeam(final Player[] players, int k, final Player[] outPlayers, final Player[] scratch) {
+        /*
         int maxTeamwork = -9999999;
+        int maxPasses = 0;
+        int minAssist = 0;
         recursiveQuickSort(players, 0, players.length - 1);
 
-        for (int i = 0; i < players.length - k; i++) {
-            int sum = 0;
-            Player[] players2 = players;
+        minAssist = players[players.length - k].getAssistsPerGame();
+        for (int i = 0; i < k; i++) {
+            scratch[i] = players[players.length - k + i];
+            maxPasses += scratch[i].getPassesPerGame();
+        }
+        //recursiveQuickSort2(scratch, 0, scratch.length - 1);
 
-            recursiveQuickSort2(players2, 0, players2.length - 1);
-            for (int j = players2.length - 1; j >= players2.length - 1 - k; j--) {
-                sum += players2[j].getPassesPerGame();
+        for (int i = players.length - k - 1; i >= 0; i--) {
+            int teamwork = 0;
+            int passes = maxPasses;
+            int assist = minAssist;
+            int minIndex = min(scratch, minAssist, 0, outPlayers.length - 1);
+            if (minIndex >= 0) {
+                assist = players[i].getAssistsPerGame();
+                passes -= scratch[minIndex].getPassesPerGame();
+                passes += players[i].getPassesPerGame();
+
+                teamwork = assist * passes;
+                if (teamwork > maxTeamwork) {
+                    System.out.println("index : " + minIndex);
+                    maxTeamwork = teamwork;
+                    maxPasses = passes;
+                    minAssist = assist;
+
+                    scratch[minIndex] = players[i];
+                    recursiveQuickSort2(scratch, 0, scratch.length - 1);
+
+                    for (int l = 0; l < scratch.length; l++) {
+                        System.out.println("{ \"" + scratch[l].getName() + "\", pointsPerGame: " + scratch[l].getPointsPerGame()
+                                + ", assistsPerGame: " + scratch[l].getAssistsPerGame() + ", passesPerGame: " + scratch[l].getPassesPerGame()
+                                + ", shootingPercentage: " + scratch[l].getShootingPercentage());
+                    }
+                    System.out.println();
+                }
             }
-            if (maxTeamwork < sum) {
-                maxTeamwork = sum * players[i].getAssistsPerGame();
-                for (int j = 0; j < k; j++) {
-                    outPlayers[j] = players[i + j];
+        }
+
+        for (int i = 0; i < outPlayers.length; i++) {
+            outPlayers[i] = scratch[i];
+        }
+
+        return maxTeamwork;
+         */
+
+        int maxTeamwork = -999999;
+        Player[] passSort = players;
+
+        recursiveQuickSort(players, 0, players.length - 1);
+        recursiveQuickSort2(passSort, 0, passSort.length - 1);
+
+        for (int i = 0; i < players.length - k; i++) {
+            int assist = players[i].getAssistsPerGame();
+            int sIndex = 0;
+            int pIndex = players.length - 1;
+            int teamwork = 0;
+            int passes = 0;
+
+            while (sIndex < k - 1) {
+                if (passSort[pIndex] == null) {
+                    System.out.println(1);
+                    pIndex--;
+                } else if (passSort[pIndex].getAssistsPerGame() == assist) {
+                    System.out.println(2);
+                    passSort[pIndex] = null;
+                    pIndex--;
+                } else if (passSort[pIndex].getAssistsPerGame() < assist) {
+                    System.out.println(3);
+                    pIndex--;
+                } else {
+                    System.out.println(4);
+                    passes += passSort[pIndex].getPassesPerGame();
+                    scratch[sIndex++] = passSort[pIndex--];
                 }
             }
 
+            teamwork = assist * passes;
+            if (teamwork > maxTeamwork) {
+                for (int j = 0; j < k; j++) {
+                    if (j == 0) {
+                        outPlayers[j] = players[i];
+                    } else {
+                        outPlayers[j] = scratch[j - 1];
+                    }
+                }
+            }
+            /*
+            int minAssist = players[i].getAssistsPerGame();
+            int minPass = 999999;
+            int minIndex = -1;
+            int passes = 0;
+            int teamwork = 0;
+
+            // scratch에 현재 시작값 넣기
+            for (int j = 0; j < k - 1; j++) {
+                scratch[j] = players[1 + i + j];
+                passes += scratch[j].getPassesPerGame();
+                if (minPass > scratch[j].getPassesPerGame()) {
+                    minPass = scratch[j].getPassesPerGame();
+                    minIndex = j;
+                }
+            }
+
+            // scratch에 최소 assist가 i일때의 최대 팀워크값 넣기
+            for (int j = i + 1; j < players.length - 1; j++) {
+                if (minPass < players[j].getPassesPerGame()) {
+                    passes -= minPass;
+                    passes += players[j].getPassesPerGame();
+
+                    scratch[minIndex] = players[j];
+                    minPass = scratch[minIndex].getPassesPerGame();
+                }
+            }
+            for (int z = 0; z < k - 1; z++) {
+                System.out.print(scratch[z].getName() +", ");
+            }
+            System.out.println();
+
+            // 팀워크가 현재 저장된 팀워크보다 더 높다면 바꾸기
+            teamwork = minAssist * passes;
+            if (maxTeamwork < teamwork) {
+                int oIndex = 0;
+                outPlayers[oIndex++] = players[i];
+                for (int j = i + 1; j < scratch.length - 1; j++) {
+                    outPlayers[oIndex++] = scratch[j];
+                }
+            }*/
         }
 
         return maxTeamwork;
@@ -282,7 +396,7 @@ public final class PocuBasketballAssociation {
     }
 
     public static void recursiveQuickSort(final Player[] players, int left, int right) {
-        if (left <= right) {
+        if (left >= right) {
             return;
         }
 
@@ -316,7 +430,7 @@ public final class PocuBasketballAssociation {
     }
 
     public static void recursiveQuickSort2(final Player[] players, int left, int right) {
-        if (left <= right) {
+        if (left >= right) {
             return;
         }
 
@@ -341,5 +455,17 @@ public final class PocuBasketballAssociation {
         playerSwap(players, pivotPos, right);
 
         return pivotPos;
+    }
+
+    public static int min(final Player[] players, int min, int left, int right) {
+        int index = -1;
+        for (int i = left; i <= right; i++) {
+            if (min > players[i].getPassesPerGame()) {
+                min = players[i].getPassesPerGame();
+                index = i;
+            }
+        }
+
+        return index;
     }
 }
