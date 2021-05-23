@@ -258,15 +258,22 @@ public final class PocuBasketballAssociation {
         return maxTeamwork;
          */
 
+        if (k == 1) {
+            recursiveQuickSort2(players, 0, players.length - 1);
+            outPlayers[0] = players[players.length - 1];
+
+            return outPlayers[0].getAssistsPerGame() * outPlayers[0].getPassesPerGame();
+        }
+
         int maxTeamwork = -999999;
         int passes = 0;
 
         // 1. assist로 정렬
         recursiveQuickSort(players, 0, players.length - 1);
 
-        // 3. 현재 어시스트보다 같거나 큰 수 중 현재 저장된 pass보다 큰 값 찾기
+        // 2. 현재 어시스트보다 같거나 큰 수 중 현재 저장된 pass보다 큰 값 찾기
         for (int i = 0; i < players.length - k; i++) {
-            // 2. Heap과 같이 사용할 자료 생성
+            // 3. Heap과 같이 사용할 자료 생성
             int scratchIndex = 0;
             int teamwork = 0;
             passes = 0;
