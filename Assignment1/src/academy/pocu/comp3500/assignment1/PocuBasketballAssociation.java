@@ -259,87 +259,38 @@ public final class PocuBasketballAssociation {
          */
 
         int maxTeamwork = -999999;
-        Player[] passSort = players;
+        int passes = 0;
 
+        // 1. assist로 정렬
         recursiveQuickSort(players, 0, players.length - 1);
-        recursiveQuickSort2(passSort, 0, passSort.length - 1);
 
+        // 3. 현재 어시스트보다 같거나 큰 수 중 현재 저장된 pass보다 큰 값 찾기
         for (int i = 0; i < players.length - k; i++) {
-            int assist = players[i].getAssistsPerGame();
-            int sIndex = 0;
-            int pIndex = players.length - 1;
+            // 2. Heap과 같이 사용할 자료 생성
+            int scratchIndex = 0;
             int teamwork = 0;
-            int passes = 0;
+            passes = 0;
 
-            while (sIndex < k - 1) {
-                if (passSort[pIndex] == null) {
-                    System.out.println(1);
-                    pIndex--;
-                } else if (passSort[pIndex].getAssistsPerGame() == assist) {
-                    System.out.println(2);
-                    passSort[pIndex] = null;
-                    pIndex--;
-                } else if (passSort[pIndex].getAssistsPerGame() < assist) {
-                    System.out.println(3);
-                    pIndex--;
-                } else {
-                    System.out.println(4);
-                    passes += passSort[pIndex].getPassesPerGame();
-                    scratch[sIndex++] = passSort[pIndex--];
+            for (int j = i; j < i + k; j++) {
+                scratch[scratchIndex] = players[j];
+                passes += scratch[scratchIndex++].getPassesPerGame();
+            }
+            recursiveQuickSort2(scratch, 1, scratch.length - 1); // pass순으로 정렬
+
+            for (int j = k; j < players.length; j++) {
+                if (scratch[1].getPassesPerGame() < players[j].getPassesPerGame()) {
+                    scratch[1] = players[j];
+                    recursiveQuickSort2(scratch, 1, scratch.length - 1);
                 }
             }
 
-            teamwork = assist * passes;
+            teamwork = scratch[0].getAssistsPerGame() * passes;
             if (teamwork > maxTeamwork) {
-                for (int j = 0; j < k; j++) {
-                    if (j == 0) {
-                        outPlayers[j] = players[i];
-                    } else {
-                        outPlayers[j] = scratch[j - 1];
-                    }
+                maxTeamwork = teamwork;
+                for (int j = 0; j < outPlayers.length; j++) {
+                    outPlayers[j] = scratch[j];
                 }
             }
-            /*
-            int minAssist = players[i].getAssistsPerGame();
-            int minPass = 999999;
-            int minIndex = -1;
-            int passes = 0;
-            int teamwork = 0;
-
-            // scratch에 현재 시작값 넣기
-            for (int j = 0; j < k - 1; j++) {
-                scratch[j] = players[1 + i + j];
-                passes += scratch[j].getPassesPerGame();
-                if (minPass > scratch[j].getPassesPerGame()) {
-                    minPass = scratch[j].getPassesPerGame();
-                    minIndex = j;
-                }
-            }
-
-            // scratch에 최소 assist가 i일때의 최대 팀워크값 넣기
-            for (int j = i + 1; j < players.length - 1; j++) {
-                if (minPass < players[j].getPassesPerGame()) {
-                    passes -= minPass;
-                    passes += players[j].getPassesPerGame();
-
-                    scratch[minIndex] = players[j];
-                    minPass = scratch[minIndex].getPassesPerGame();
-                }
-            }
-            for (int z = 0; z < k - 1; z++) {
-                System.out.print(scratch[z].getName() +", ");
-            }
-            System.out.println();
-
-            // 팀워크가 현재 저장된 팀워크보다 더 높다면 바꾸기
-            teamwork = minAssist * passes;
-            if (maxTeamwork < teamwork) {
-                int oIndex = 0;
-                outPlayers[oIndex++] = players[i];
-                for (int j = i + 1; j < scratch.length - 1; j++) {
-                    outPlayers[oIndex++] = scratch[j];
-                }
-            }*/
         }
 
         return maxTeamwork;
@@ -468,4 +419,5 @@ public final class PocuBasketballAssociation {
 
         return index;
     }
+
 }
