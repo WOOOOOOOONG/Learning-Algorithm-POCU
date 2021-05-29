@@ -16,8 +16,7 @@ public final class Cracker {
     private String email;
     private String password;
     private String[] passwordToHash;
-    private int userIndex;
-    private int encoding; // 0: CRC32, 1: MD2, MD5, 3:SHA1, 4:SHA256
+    private int encoding; // 0: CRC32, 1: MD2, 2: MD5, 3:SHA1, 4:SHA256
 
     public Cracker(User[] userTable, String email, String password) {
         this.userTable = userTable;
@@ -92,7 +91,7 @@ public final class Cracker {
             }
             base64 = Base64.getEncoder().encodeToString(hash4);
             passwordToHash[4] = base64;
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return;
         }
@@ -113,29 +112,6 @@ public final class Cracker {
                 break;
             }
         }
-
-        /*
-        for (int i = 0; i < userTable.length; i++) {
-            if (userTable[i].getEmail().equals(email)) {
-                userIndex = i;
-            }
-        }
-
-        switch (userTable[0].getPasswordHash().length()) {
-            case 9:
-                encoding = 0;
-                break;
-            case 24:
-                encoding = 1;
-                break;
-            case 28:
-                encoding = 3;
-                break;
-            case 44:
-                encoding = 4;
-                break;
-        }
-        */
     }
 
     public String[] run(final RainbowTable[] rainbowTables) {
@@ -143,38 +119,6 @@ public final class Cracker {
 
         for (int i = 0; i < userTable.length; i++)
             answer[i] = rainbowTables[encoding].get(userTable[i].getPasswordHash());
-
-        /*
-        String[] answer = new String[userTable.length];
-
-        if (encoding != 1) {
-            for (int i = 0; i < userTable.length; i++) {
-                answer[i] = rainbowTables[encoding].get(userTable[i].getPasswordHash());
-            }
-        } else {
-            for (int i = 0; i < userTable.length; i++) {
-                for (int j = encoding; j <= encoding + 1; j++) {
-                    answer[i] = rainbowTables[j].get(userTable[i].getPasswordHash());
-
-                    if (answer[i] != null) {
-                        break;
-                    }
-                }
-            }
-        }
-
-         */
-        /*
-        for (int i = 0; i < userTable.length; i++) {
-            for (int j = 0; j < rainbowTables.length; j++) {
-                answer[i] = rainbowTables[j].get(userTable[i].getPasswordHash());
-
-                if (answer[i] != null) {
-                    break;
-                }
-            }
-        }
-        */
 
         return answer;
     }
