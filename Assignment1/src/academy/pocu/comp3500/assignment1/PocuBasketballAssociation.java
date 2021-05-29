@@ -257,6 +257,9 @@ public final class PocuBasketballAssociation {
 
         return maxTeamwork;
          */
+        if (k == 0) {
+            return 0;
+        }
 
         if (k == 1) {
             recursiveQuickSort2(players, 0, players.length - 1);
