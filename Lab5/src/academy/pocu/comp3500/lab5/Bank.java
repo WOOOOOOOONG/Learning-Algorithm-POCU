@@ -3,7 +3,9 @@ package academy.pocu.comp3500.lab5;
 import javax.crypto.Cipher;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.KeyFactory;
+import java.security.MessageDigest;
+import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.LinkedList;
@@ -32,6 +34,9 @@ public class Bank {
     }
 
     public boolean transfer(final byte[] from, byte[] to, final long amount, final byte[] signature) {
+        if (amount < 0) {
+            return false;
+        }
         int transfer = -1;
         int receiver = -1;
         boolean bTransferFind = false;
@@ -110,8 +115,12 @@ public class Bank {
             }
         }
 
-        if (transfer == -1 || receiver == -1) {
+        if (!bTransferFind || !bReceiverFind) {
             return false;
+        } else if (amounts[transfer] < amount) {
+            return false; // 지갑에 돈이 존재하지 않거나 적을 때
+        } else if (amounts[receiver] > Long.MAX_VALUE - amount) {
+            return false; // 금액 수신 뒤 최대량보다 더 많다면
         } else {
             amounts[transfer] -= amount;
             amounts[receiver] += amount;
@@ -142,20 +151,6 @@ public class Bank {
 
             return plaintext;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static KeyPair getKeyPair() {
-        try {
-            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-
-            generator.initialize(2048, new SecureRandom());
-            KeyPair pair = generator.generateKeyPair();
-
-            return pair;
-        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
