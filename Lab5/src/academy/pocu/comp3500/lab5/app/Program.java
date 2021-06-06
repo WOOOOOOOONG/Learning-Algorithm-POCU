@@ -33,7 +33,7 @@ public class Program {
 
         assert (KeyGenerator.isPrime(BigInteger.valueOf(886913)));
         assert (KeyGenerator.isPrime(BigInteger.valueOf(8900000189L))); // 걸림
-        System.out.println(KeyGenerator.isPrime(BigInteger.valueOf(2476)));
+        System.out.println(KeyGenerator.isPrime(BigInteger.valueOf(8900000189L)));
 
         // Bank
         final String TEST_PUBLIC_KEY_1 = "30820122300d06092a864886f70d01010105000382010f003082010a0282010100b2bb213e18fe414ff32bf17f6630d542a667275813627445a92043791cd924dc4dec2007a10aa6a268bfef2b56677e2cecd0092a2e348aec34316edc20648820fee83125daba065826d2cbcc684fcbafc8fb22930eb6bd827713d7c7e598b9efd83689745288e9a1630175bf2759e5749cdfbad304921d15bb901d1ba0ca31b367733161d60839c7378be720863cb5e20d845edff236f442bc0bb6ac726970038b4490d2d4f25b3b0721510cea4aa45a50fe59fa09cdadcd4c0d1ab7f268e02b3cced773985e10a18f72cb808d104874e43a0c2eb0e44345751fefd6153211a9b3dc53592e2c203694bd501d6fabc3ae53b7ec8207de79bc8188a74e0d359f290203010001";
@@ -94,7 +94,6 @@ public class Program {
 
         long noAmountBalance = bank.getBalance(noAmountPublicKey);
         assert (noAmountBalance == AMOUNT);
-        System.out.println(noAmountBalance == AMOUNT);
     }
 
     private static byte[] decodeFromHexString(String hexString) {

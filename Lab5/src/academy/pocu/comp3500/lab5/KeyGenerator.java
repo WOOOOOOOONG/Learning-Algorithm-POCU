@@ -5,74 +5,51 @@ import java.util.Random;
 
 public class KeyGenerator {
     public static boolean isPrime(final BigInteger number) {
-        if (isPrime(number, 100)) {
+        if (number.intValue() <= 0) {
+            return false;
+        }
+        if (isProbablePrime(number, 100)) {
             return true;
         }
 
         return false;
     }
 
-    public static boolean isPrime(BigInteger n, int precision) {
-        if (n.intValue() <= 0) {
-            return false;
+    public static boolean isProbablePrime(BigInteger n, int k) {
+        if (n.compareTo(new BigInteger("3")) < 0)
+            return true;
+        int s = 0;
+        BigInteger d = n.subtract(BigInteger.ONE); // n-1
+        while (d.mod(BigInteger.TWO).equals(BigInteger.ZERO)) { //?
+            s++;                          //?
+            d = d.divide(BigInteger.TWO);            //?
         }
-        /*
-        if (n.compareTo(new BigInteger("341550071728321")) >= 0) {
-            return n.isProbablePrime(precision);
-        }
-        */
-        int intN = n.intValue();
-        if (intN == 1 || intN == 4 || intN == 6 || intN == 8) return false;
-        if (intN == 2 || intN == 3 || intN == 5 || intN == 7) return true;
-
-        int[] primesToTest = getPrimesToTest(n);
-        if (n.equals(new BigInteger("3215031751"))) {
-            return false;
-        }
-        BigInteger d = n.subtract(BigInteger.ONE);
-        BigInteger s = BigInteger.ZERO;
-        while (d.mod(BigInteger.valueOf(2)).equals(BigInteger.ZERO)) {
-            d = d.shiftRight(1);
-            s = s.add(BigInteger.ONE);
-        }
-        for (int a : primesToTest) {
-            if (tryComposite(a, d, n, s)) {
-                return false;
+        for (int i = 0; i < k; i++) {    //LOOP: repeat k times
+            BigInteger a = uniformRandom(BigInteger.TWO, n.subtract(BigInteger.ONE)); //?
+            BigInteger x = a.modPow(d, n);  //x = a^d mod n
+            if (x.equals(BigInteger.ONE) || x.equals(n.subtract(BigInteger.ONE))) // if x=1 or x = n-1, then do next LOOP
+                continue;
+            int r = 1;
+            for (; r < s; r++) { // for r = 1..s-1
+                x = x.modPow(BigInteger.TWO, n);  //x = x ^ 2 mod n
+                if (x.equals(BigInteger.ONE))     //if x = 1, return false (composite
+                    return false;
+                if (x.equals(n.subtract(BigInteger.ONE))) //if x= n-1, look at the next a
+                    break;
             }
+            if (r == s) // None of the steps made x equal n-1.
+                return false; //we've exhausted all of our a values, probably composite
         }
-        return true;
+        return true; //probably prime
     }
 
-    private static int[] getPrimesToTest(BigInteger n) {
-        if (n.compareTo(new BigInteger("3474749660383")) >= 0) {
-            return new int[]{2, 3, 5, 7, 11, 13, 17};
-        }
-        if (n.compareTo(new BigInteger("2152302898747")) >= 0) {
-            return new int[]{2, 3, 5, 7, 11, 13};
-        }
-        if (n.compareTo(new BigInteger("118670087467")) >= 0) {
-            return new int[]{2, 3, 5, 7, 11};
-        }
-        if (n.compareTo(new BigInteger("25326001")) >= 0) {
-            return new int[]{2, 3, 5, 7};
-        }
-        if (n.compareTo(new BigInteger("1373653")) >= 0) {
-            return new int[]{2, 3, 5};
-        }
-        return new int[]{2, 3};
-    }
-
-    private static boolean tryComposite(int a, BigInteger d, BigInteger n, BigInteger s) {
-        BigInteger aB = BigInteger.valueOf(a);
-        if (aB.modPow(d, n).equals(BigInteger.ONE)) {
-            return false;
-        }
-        for (int i = 0; BigInteger.valueOf(i).compareTo(s) < 0; i++) {
-            // if pow(a, 2**i * d, n) == n-1
-            if (aB.modPow(BigInteger.valueOf(2).pow(i).multiply(d), n).equals(n.subtract(BigInteger.ONE))) {
-                return false;
-            }
-        }
-        return true;
+    //this method is just to generate a random int
+    private static BigInteger uniformRandom(BigInteger bottom, BigInteger top) {
+        Random rnd = new Random();
+        BigInteger res;
+        do {
+            res = new BigInteger(top.bitLength(), rnd);
+        } while (res.compareTo(bottom) < 0 || res.compareTo(top) > 0);
+        return res;
     }
 }
