@@ -9,7 +9,7 @@ public class KeyGenerator {
         if (number.intValue() <= 0) {
             return false;
         }
-        if (is_prime(number)) {
+        if (isPrime(number)) {
             return true;
         }
 
@@ -56,7 +56,7 @@ public class KeyGenerator {
     }
 
     // true for probable prime, false for composite
-    public static boolean miller_rabin(BigInteger n, BigInteger a) {
+    public static boolean millerRabin(BigInteger n, BigInteger a) {
         BigInteger d = n.subtract(BigInteger.ONE);
         while (d.mod(BigInteger.TWO).compareTo(BigInteger.ZERO) == 0) {
             if (powmod(a, d, n).compareTo(n.subtract(BigInteger.ONE)) == 0)
@@ -67,7 +67,7 @@ public class KeyGenerator {
         return tmp.compareTo(n.subtract(BigInteger.ONE)) == 0 || tmp.compareTo(BigInteger.ONE) == 0;
     }
 
-    public static boolean is_prime(BigInteger n) {
+    public static boolean isPrime(BigInteger n) {
         BigInteger[] alist = {BigInteger.valueOf(2), BigInteger.valueOf(325), BigInteger.valueOf(9375), BigInteger.valueOf(28178), BigInteger.valueOf(450775), BigInteger.valueOf(9780504), BigInteger.valueOf(1795265022)};
 
         if (n.compareTo(BigInteger.ONE) == 0 || n.compareTo(BigInteger.ONE) == -1)
@@ -81,7 +81,7 @@ public class KeyGenerator {
         }
 
         for (BigInteger a : alist)
-            if (!miller_rabin(n, a))
+            if (!millerRabin(n, a))
                 return false;
         return true;
     }
