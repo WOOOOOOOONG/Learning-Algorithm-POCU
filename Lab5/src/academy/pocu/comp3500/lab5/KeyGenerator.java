@@ -4,79 +4,66 @@ import java.math.BigInteger;
 
 public class KeyGenerator {
     public static boolean isPrime(final BigInteger number) {
-        if (isPrime(number.intValue(), 100)) {
+        if (isPrime(number.intValue(), Long.MAX_VALUE)) {
             return true;
         }
 
         return false;
     }
 
-    private static boolean isPrime(long candidate, long accuracy) {
-        long d, s;
+    static int power(int x, int y, int p) {
+        int res = 1;
 
-        if (candidate == 2)
-            return true;
-        if (candidate < 2)
-            return false;
+        x = x % p;
 
-        // until d is odd
-        for (d = 0, s = 1; (d & 1) == 0; s++)
-            d = (candidate - 1) / fastPow(2, s);
+        while (y > 0) {
+            if ((y & 1) == 1)
+                res = (res * x) % p;
 
-        verification: for (long i = 0; i < accuracy; i++) {
-            // random base in the range [2, n-1]
-            long base = (long) ((Math.random() * (candidate - 3)) + 2);
-
-            long x = fastPow(base, d, candidate);
-
-            if (x == 1 || x == (candidate - 1))
-                continue verification;
-
-            for (long j = 0; j < (s - 1); j++) {
-                x = fastPow(x, 2, candidate);
-                if (x == 1)
-                    return false;
-                if (x == (candidate - 1))
-                    continue verification;
-            }
-
-            return false;
+            y = y >> 1; // y = y/2
+            x = (x * x) % p;
         }
+
+        return res;
+    }
+
+    static boolean miillerTest(int d, int n) {
+        int a = 2 + (int)(Math.random() % (n - 4));
+
+        int x = power(a, d, n);
+
+        if (x == 1 || x == n - 1)
+            return true;
+
+        while (d != n - 1) {
+            x = (x * x) % n;
+            d *= 2;
+
+            if (x == 1)
+                return false;
+            if (x == n - 1)
+                return true;
+        }
+
+        return false;
+    }
+
+    static boolean isPrime(int n, long k) {
+
+        if (n <= 1 || n == 4)
+            return false;
+        if (n <= 3)
+            return true;
+
+        int d = n - 1;
+
+        while (d % 2 == 0)
+            d /= 2;
+
+        for (int i = 0; i < k; i++)
+            if (!miillerTest(d, n))
+                return false;
 
         return true;
-    }
-
-    private static long fastPow(long base, long exponent) {
-        int shift = 63; // bit position
-        long result = base; // (1 * 1) * base = base
-
-        // Skip all leading 0 bits and the most significant 1 bit.
-        while (((exponent >> shift--) & 1) == 0)
-            ;
-
-        while (shift >= 0) {
-            result = result * result;
-            if (((exponent >> shift--) & 1) == 1)
-                result = result * base;
-        }
-
-        return result;
-    }
-
-    private static long fastPow(long base, long exponent, long modulo) {
-        int shift = 63; // bit position
-        long result = base; // (1 * 1) * base = base
-
-        // Skip all leading 0 bits and the most significant 1 bit.
-        while (((exponent >> shift--) & 1) == 0)
-            ;
-
-        while (shift >= 0) {
-            result = (result * result) % modulo;
-            if (((exponent >> shift--) & 1) == 1)
-                result = (result * base) % modulo;
-        }
-
-        return result;
     }
 }
