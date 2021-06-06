@@ -33,7 +33,7 @@ public class Program {
 
         assert (KeyGenerator.isPrime(BigInteger.valueOf(886913)));
         assert (KeyGenerator.isPrime(BigInteger.valueOf(8900000189L))); // 걸림
-        System.out.println(KeyGenerator.isPrime(BigInteger.valueOf(0)));
+        System.out.println(KeyGenerator.isPrime(BigInteger.valueOf(2476)));
 
         // Bank
         final String TEST_PUBLIC_KEY_1 = "30820122300d06092a864886f70d01010105000382010f003082010a0282010100b2bb213e18fe414ff32bf17f6630d542a667275813627445a92043791cd924dc4dec2007a10aa6a268bfef2b56677e2cecd0092a2e348aec34316edc20648820fee83125daba065826d2cbcc684fcbafc8fb22930eb6bd827713d7c7e598b9efd83689745288e9a1630175bf2759e5749cdfbad304921d15bb901d1ba0ca31b367733161d60839c7378be720863cb5e20d845edff236f442bc0bb6ac726970038b4490d2d4f25b3b0721510cea4aa45a50fe59fa09cdadcd4c0d1ab7f268e02b3cced773985e10a18f72cb808d104874e43a0c2eb0e44345751fefd6153211a9b3dc53592e2c203694bd501d6fabc3ae53b7ec8207de79bc8188a74e0d359f290203010001";
@@ -83,6 +83,18 @@ public class Program {
 
         assert (senderBalance == senderInitialBalance - AMOUNT);
         assert (receiverBalance == receiverInitialBalance + AMOUNT);
+
+        // D09 - NoMatchingReceiver 검증 테스트
+        byte[] noAmountPublicKey = decodeFromHexString(TEST_PRIVATE_KEY_3);
+        final String TEST_1_TEST_3_5000_SIGNATURE = "973624f1045e8528141010868c43997d2021cb000d43b51289f8adeed3711c15d9a94f3ffdb5dcf00154cda948dd4b6de4b13a01409be03be8de84c0fc82d04b4abd85aaa2c474669e3a562301b8410cf40e81ab2f085ed4690ad83130f1271d470ed37680859d389952790ce197fef6a4cd321fc10e2266d5c7b1de901a30bf3da5ce22284b6608fbb48752d278f3480f9d8a46bf43714b6a16260188979927529c69e9cd70bd8da56f45a49896857e0e9cc1582c740dd0f53909323b4525bc02b424793c485c73b6c94a543f662ba414e39c38930ff9308157077de365f3473e2b7ccf68abb643c1d71949ab5762ddf2644d5bcadce4c8115f94ffc99bf567";
+        byte[] noAmountSignature = decodeFromHexString(TEST_1_TEST_3_5000_SIGNATURE);
+
+        boolean noAmountTransferResult = bank.transfer(senderPublicKey, noAmountPublicKey, AMOUNT, noAmountSignature);
+        assert (noAmountTransferResult);
+
+        long noAmountBalance = bank.getBalance(noAmountPublicKey);
+        assert (noAmountBalance == AMOUNT);
+        System.out.println(noAmountBalance == AMOUNT);
     }
 
     private static byte[] decodeFromHexString(String hexString) {

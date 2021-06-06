@@ -132,7 +132,7 @@ public class Bank {
             for (int i = 0; i < pKey.length; i++) {
                 pubKeys[i] = pKey[i];
             }
-            pubKeys[pKey.length + 1] = to;
+            pubKeys[pKey.length] = to;
 
             amounts = new long[pBalance.length + 1];
             for (int i = 0; i < pBalance.length; i++) {
@@ -140,7 +140,7 @@ public class Bank {
             }
 
             amounts[transfer] -= amount;
-            amounts[pBalance.length + 1] = amount;
+            amounts[pBalance.length] = amount;
 
             return true;
         } else if (amounts[transfer] < amount) {

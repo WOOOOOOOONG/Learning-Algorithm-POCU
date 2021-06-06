@@ -16,10 +16,11 @@ public class KeyGenerator {
         if (n.intValue() <= 0) {
             return false;
         }
+        /*
         if (n.compareTo(new BigInteger("341550071728321")) >= 0) {
             return n.isProbablePrime(precision);
         }
-
+        */
         int intN = n.intValue();
         if (intN == 1 || intN == 4 || intN == 6 || intN == 8) return false;
         if (intN == 2 || intN == 3 || intN == 5 || intN == 7) return true;
@@ -35,7 +36,7 @@ public class KeyGenerator {
             s = s.add(BigInteger.ONE);
         }
         for (int a : primesToTest) {
-            if (try_composite(a, d, n, s)) {
+            if (tryComposite(a, d, n, s)) {
                 return false;
             }
         }
@@ -61,7 +62,7 @@ public class KeyGenerator {
         return new int[]{2, 3};
     }
 
-    private static boolean try_composite(int a, BigInteger d, BigInteger n, BigInteger s) {
+    private static boolean tryComposite(int a, BigInteger d, BigInteger n, BigInteger s) {
         BigInteger aB = BigInteger.valueOf(a);
         if (aB.modPow(d, n).equals(BigInteger.ONE)) {
             return false;
