@@ -38,84 +38,74 @@ public class Bank {
         boolean bReceiverFind = false;
         byte[] message;
         int messageLength;
-        int messageIndex = 0;
+        boolean bCompare = false;
 
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.putLong(amount);
-        byte[] amountToBytes = buffer.array();
+        byte[] amountToBytes = ByteBuffer.allocate(Long.BYTES).putLong(amount).array();
 
         messageLength = from.length + to.length + amountToBytes.length;
         message = new byte[messageLength];
 
+        // message : [from, to, amount]
         System.arraycopy(from, 0, message, 0, from.length);
         System.arraycopy(to, 0, message, from.length, to.length);
         System.arraycopy(amountToBytes, 0, message, from.length + to.length, amountToBytes.length);
 
-        /*
-        for (int i = 0; i < from.length; i++) {
-            message[messageIndex++] = from[i];
-        }
-        for (int i = 0; i < to.length; i++) {
-            message[messageIndex++] = to[i];
-        }
-        for (int i = 0; i < amountToBytes.length; i++) {
-            message[messageIndex++] = amountToBytes[i];
-        }
-        for (int i = 0; i < message.length; i++) {
-            System.out.print(message[i]);
-        }
-        System.out.println();
-        */
-
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(message);
-            StringBuffer hexString = new StringBuffer(); // sha256([from, to, amount])
-
-            for (int i = 0; i < hash.length; i++) {
-                String hex = Integer.toHexString(0xff & hash[i]);
-                if(hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
+            digest.update(message);
+            byte[] byteData = digest.digest();
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < byteData.length; i++) {
+                sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
             }
+            String sha256encoding = sb.toString();
 
-            // pubKey 생성
-            PublicKey pubKey = getPublicKey(from);
             // signature 디코딩
-            String decoding = decrypt(signature, pubKey);
+            PublicKey pubKey = getPublicKey(from); // pubKey 생성
+            byte[] decoding = decrypt(signature, pubKey);
 
-            System.out.println(decoding);
-            System.out.println(hexString);
+            StringBuffer sb2 = new StringBuffer();
+            for (int i = 0; i < decoding.length; i++) {
+                sb2.append(Integer.toString((decoding[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            String rsaDecoding = sb2.toString();
+
+            if (sha256encoding.equals(rsaDecoding)) {
+                bCompare = true;
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
 
-        // from, to의 인덱스 구해 각각 인출/송금 계산
-        for (int i = 0; i < pubKeys.length; i++) {
-            if (bTransferFind) {
-                break;
-            }
-
-            for (int j = 0; j < pubKeys[i].length; j++) {
-                if (pubKeys[i][j] != from[j]) {
+        if (bCompare) {
+            // from, to의 인덱스 구해 각각 인출/송금 계산
+            for (int i = 0; i < pubKeys.length; i++) {
+                if (bTransferFind) {
                     break;
-                } else if (j == pubKeys[i].length - 1 && pubKeys[i][j] == from[j]) {
-                    transfer = i;
-                    bTransferFind = true;
+                }
+
+                for (int j = 0; j < pubKeys[i].length; j++) {
+                    if (pubKeys[i][j] != from[j]) {
+                        break;
+                    } else if (j == pubKeys[i].length - 1 && pubKeys[i][j] == from[j]) {
+                        transfer = i;
+                        bTransferFind = true;
+                    }
                 }
             }
-        }
 
-        for (int i = 0; i < pubKeys.length; i++) {
-            if (bReceiverFind) {
-                break;
-            }
-
-            for (int j = 0; j < pubKeys[i].length; j++) {
-                if (pubKeys[i][j] != to[j]) {
+            for (int i = 0; i < pubKeys.length; i++) {
+                if (bReceiverFind) {
                     break;
-                } else if (j == pubKeys[i].length - 1 && pubKeys[i][j] == to[j]) {
-                    receiver = i;
-                    bReceiverFind = true;
+                }
+
+                for (int j = 0; j < pubKeys[i].length; j++) {
+                    if (pubKeys[i][j] != to[j]) {
+                        break;
+                    } else if (j == pubKeys[i].length - 1 && pubKeys[i][j] == to[j]) {
+                        receiver = i;
+                        bReceiverFind = true;
+                    }
                 }
             }
         }
@@ -130,20 +120,6 @@ public class Bank {
         }
     }
 
-    private static String decrypt(byte[] ciphertext, PublicKey publicKey) {
-        try {
-            Cipher cipher = Cipher.getInstance("RSA");
-            cipher.init(Cipher.DECRYPT_MODE, publicKey);
-
-            byte[] plaintext = cipher.doFinal(ciphertext);
-
-            return new String(plaintext, StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
     public static PublicKey getPublicKey(byte[] from) {
         try {
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(from);
@@ -151,6 +127,20 @@ public class Bank {
             PublicKey pubKey = keyFactory.generatePublic(keySpec);
 
             return pubKey;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static byte[] decrypt(byte[] ciphertext, PublicKey publicKey) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, publicKey);
+
+            byte[] plaintext = cipher.doFinal(ciphertext);
+
+            return plaintext;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -169,23 +159,5 @@ public class Bank {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
-
-    private static byte[] decodeFromHexString(String hexString) {
-        byte[] bytes = new byte[hexString.length() / 2];
-        for (int i = 0; i < hexString.length(); i += 2) {
-            int firstDigit = Character.digit(hexString.charAt(i), 16);
-            int secondDigit = Character.digit(hexString.charAt(i + 1), 16);
-            bytes[i / 2] = (byte) ((firstDigit << 4) + secondDigit);
-        }
-        return bytes;
-    }
-
-    private static String encodeToHexString(byte[] bytes) {
-        StringBuilder result = new StringBuilder();
-        for (byte oneByte : bytes) {
-            result.append(String.format("%02x", oneByte));
-        }
-        return result.toString();
     }
 }
