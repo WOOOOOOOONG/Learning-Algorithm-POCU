@@ -5,59 +5,73 @@ import java.util.Random;
 
 public class KeyGenerator {
     public static boolean isPrime(final BigInteger number) {
-        if (isPrime(number.intValue(), 100)) {
+        if (isPrime(number, 100)) {
             return true;
         }
 
         return false;
     }
-    /** Function to check if prime or not **/
-    public static boolean isPrime(long n, int iteration)
-    {
-        /** base case **/
-        if (n == 0 || n == 1)
-            return false;
-        /** base case - 2 is prime **/
-        if (n == 2)
-            return true;
-        /** an even number other than 2 is composite **/
-        if (n % 2 == 0)
-            return false;
 
-        long s = n - 1;
-        while (s % 2 == 0)
-            s /= 2;
+    public static boolean isPrime(BigInteger n, int precision) {
+        if (n.intValue() <= 0) {
+            return false;
+        }
+        if (n.compareTo(new BigInteger("341550071728321")) >= 0) {
+            return n.isProbablePrime(precision);
+        }
 
-        Random rand = new Random();
-        for (int i = 0; i < iteration; i++)
-        {
-            long r = Math.abs(rand.nextLong());
-            long a = r % (n - 1) + 1, temp = s;
-            long mod = modPow(a, temp, n);
-            while (temp != n - 1 && mod != 1 && mod != n - 1)
-            {
-                mod = mulMod(mod, mod, n);
-                temp *= 2;
-            }
-            if (mod != n - 1 && temp % 2 == 0)
+        int intN = n.intValue();
+        if (intN == 1 || intN == 4 || intN == 6 || intN == 8) return false;
+        if (intN == 2 || intN == 3 || intN == 5 || intN == 7) return true;
+
+        int[] primesToTest = getPrimesToTest(n);
+        if (n.equals(new BigInteger("3215031751"))) {
+            return false;
+        }
+        BigInteger d = n.subtract(BigInteger.ONE);
+        BigInteger s = BigInteger.ZERO;
+        while (d.mod(BigInteger.valueOf(2)).equals(BigInteger.ZERO)) {
+            d = d.shiftRight(1);
+            s = s.add(BigInteger.ONE);
+        }
+        for (int a : primesToTest) {
+            if (try_composite(a, d, n, s)) {
                 return false;
+            }
         }
         return true;
     }
-    /** Function to calculate (a ^ b) % c **/
-    public static long modPow(long a, long b, long c)
-    {
-        long res = 1;
-        for (int i = 0; i < b; i++)
-        {
-            res *= a;
-            res %= c;
+
+    private static int[] getPrimesToTest(BigInteger n) {
+        if (n.compareTo(new BigInteger("3474749660383")) >= 0) {
+            return new int[]{2, 3, 5, 7, 11, 13, 17};
         }
-        return res % c;
+        if (n.compareTo(new BigInteger("2152302898747")) >= 0) {
+            return new int[]{2, 3, 5, 7, 11, 13};
+        }
+        if (n.compareTo(new BigInteger("118670087467")) >= 0) {
+            return new int[]{2, 3, 5, 7, 11};
+        }
+        if (n.compareTo(new BigInteger("25326001")) >= 0) {
+            return new int[]{2, 3, 5, 7};
+        }
+        if (n.compareTo(new BigInteger("1373653")) >= 0) {
+            return new int[]{2, 3, 5};
+        }
+        return new int[]{2, 3};
     }
-    /** Function to calculate (a * b) % c **/
-    public static long mulMod(long a, long b, long mod)
-    {
-        return BigInteger.valueOf(a).multiply(BigInteger.valueOf(b)).mod(BigInteger.valueOf(mod)).longValue();
+
+    private static boolean try_composite(int a, BigInteger d, BigInteger n, BigInteger s) {
+        BigInteger aB = BigInteger.valueOf(a);
+        if (aB.modPow(d, n).equals(BigInteger.ONE)) {
+            return false;
+        }
+        for (int i = 0; BigInteger.valueOf(i).compareTo(s) < 0; i++) {
+            // if pow(a, 2**i * d, n) == n-1
+            if (aB.modPow(BigInteger.valueOf(2).pow(i).multiply(d), n).equals(n.subtract(BigInteger.ONE))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
