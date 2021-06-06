@@ -34,7 +34,7 @@ public class Bank {
     }
 
     public boolean transfer(final byte[] from, byte[] to, final long amount, final byte[] signature) {
-        if (amount < 0) {
+        if (amount <= 0 || amount > Long.MAX_VALUE) {
             return false;
         }
         int transfer = -1;
@@ -115,8 +115,34 @@ public class Bank {
             }
         }
 
-        if (!bTransferFind || !bReceiverFind) {
+        if (!bTransferFind) {
             return false;
+        } else if (!bReceiverFind) {
+            byte[][] pKey = new byte[pubKeys.length][];
+            for (int i = 0; i < pubKeys.length; i++) {
+                pKey[i] = pubKeys[i];
+            }
+
+            long[] pBalance = new long[amounts.length];
+            for (int i = 0; i < amounts.length; i++) {
+                pBalance[i] = amounts[i];
+            }
+
+            pubKeys = new byte[pKey.length + 1][];
+            for (int i = 0; i < pKey.length; i++) {
+                pubKeys[i] = pKey[i];
+            }
+            pubKeys[pKey.length + 1] = to;
+
+            amounts = new long[pBalance.length + 1];
+            for (int i = 0; i < pBalance.length; i++) {
+                amounts[i] = pBalance[i];
+            }
+
+            amounts[transfer] -= amount;
+            amounts[pBalance.length + 1] = amount;
+
+            return true;
         } else if (amounts[transfer] < amount) {
             return false; // 지갑에 돈이 존재하지 않거나 적을 때
         } else if (amounts[receiver] > Long.MAX_VALUE - amount) {
