@@ -41,11 +41,14 @@ public class League {
         }
 
         // 2. 현재 선수 찾기 -> O(log n)
-        int curPlayerOrder = findPlayer(players, player.getId(), 0, players.size() - 1);
+        int curPlayerOrder = findPlayer(players, player.getId(), player.getRating(), 0, players.size() - 1);
         if (curPlayerOrder == -1) {
             return null;
+        } else {
+            return players.get(curPlayerOrder);
         }
 
+        /*
         // 3. 앞뒤 비교하여 차이가 더 적거나, 둘 다 같다면 뒤 선수 선택
         int pre = 999999;
         int back = 999999;
@@ -57,13 +60,14 @@ public class League {
         }
 
         int result = -1;
-        if (pre != 999999 && back != 999999) {
+        if (pre != 999999 || back != 999999) {
             result = pre < back ? curPlayerOrder - 1 : curPlayerOrder + 1;
-
+            //System.out.println("result : " + players.get(result).getId());
             return players.get(result);
         } else {
             return null;
         }
+         */
     }
 
     public Player[] getTop(final int count) {
@@ -113,6 +117,7 @@ public class League {
     }
 
     public boolean join(final Player player) {
+        //System.out.print("삽입 전 : ");Node.traverseInOrder(root);
         if (Node.getNodeOrNull(root, player) != null) {
             return false;
         }
@@ -125,15 +130,22 @@ public class League {
     }
 
     public boolean leave(final Player player) {
+        //System.out.println("삭제할 데이터 : " + player.getId());
         if (Node.getNodeOrNull(root, player) != null) {
-            Node.removeRecursive(root, player);
+            //System.out.print("삭제 전 : "); Node.traverseInOrder(root);
+            //System.out.println();
+            root = Node.removeRecursive(root, player);
             for (int i = 0; i < players.size(); i++) {
                 if (player.getId() == players.get(i).getId()) {
                     players.remove(i);
                     bIsSort = false;
-                    return true;
+                    //System.out.print("삭제 후 : "); Node.traverseInOrder(root);
+                    //System.out.println();
+                    break;
                 }
             }
+
+            return true;
         }
 
         return false;
@@ -143,24 +155,43 @@ public class League {
         for (int i = 0; i < players.size(); i++) {
             System.out.println(players.get(i).toString());
         }
-        System.out.println();
     }
 
-    public int findPlayer(ArrayList<Player> players, int id, int left, int right) {
+    public int findPlayer(ArrayList<Player> players, int id, int rating, int left, int right) {
         if (left > right) {
             return -1;
         }
 
         int mid = (left + right) / 2;
 
-        if (players.get(mid).getId() == id) {
-            return mid;
+        if (players.get(mid).getRating() == rating) {
+            if (players.get(mid).getId() != id) {
+                return mid;
+            } else {
+                int pre = 999999;
+                int back = 999999;
+                if ((mid - 1) >= 0) {
+                    pre = Math.abs(rating - players.get(mid - 1).getRating());
+                }
+                if ((mid + 1) < players.size()) {
+                    back = Math.abs(rating - players.get(mid + 1).getRating());
+                }
+
+                int result = -1;
+                if (pre != 999999 || back != 999999) {
+                    result = pre < back ? mid - 1 : mid + 1;
+                    return result;
+                } else {
+                    return -1;
+                }
+            }
         }
 
-        if (id >= players.get(left).getId() && id <= players.get(mid).getId()) {
-            return findPlayer(players, id, left, mid - 1);
+        if (id < players.get(mid).getRating()) {
+            return findPlayer(players, id, rating, left, mid - 1);
+        } else {
+            return findPlayer(players, id, rating, mid + 1, right);
         }
-        return findPlayer(players, id, mid + 1, right);
     }
 
     public void quicksortPlayer(ArrayList<Player> players) {
