@@ -1,13 +1,8 @@
 package academy.pocu.comp3500.lab6.app;
 
 import academy.pocu.comp3500.lab6.League;
-import academy.pocu.comp3500.lab6.Node;
 import academy.pocu.comp3500.lab6.leagueofpocu.Player;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import org.junit.jupiter.api.*;
-import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -16,17 +11,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class Program {
-
-    public static void main(String[] args) {
-//        mainTest();
-        assert (1 == 0);
-        constructorTest();
+public class ProgramTest {
+    @Test
+    public void Test() {
+        mainTest();
+//        constructorTest();
 //        findMatchOrNullTest();
 //        getTopTest();
 //        getBottomTest();
 //        exampleTest();
 //        joinAndLeaveTest();
+//
+        testC();
+
+//        testG2();
+//        testFG();
+//        exampleTestFG();
+//
+//        testG6();
+//        exampleTestG6();
+        mskTest();
+        kkrTest();
+        kkrTest2();
+        kdhTest1();
+        kdhTest2();
     }
 
     private static void kdhTest1() {
@@ -210,7 +218,6 @@ public class Program {
 
         leaveSuccess = league1.leave(new Player(5, "player5", 10));
         assert (!leaveSuccess);
-        System.out.println(leaveSuccess);
     }
 
     private static void constructorTest() {
@@ -253,12 +260,26 @@ public class Program {
                 for (int i = 1; i <= playersCount; ++i) {
                     players[i - 1] = new Player(i, String.format("player%d", i), random.nextInt(100) + 1);
                 }
-                System.out.println("그래서 뭔데 : " + players.length);
+
                 League emptyLeague = new League();
                 // TODO: sort players
-                quicksortPlayer(players);
                 League league = new League(players, true);
 
+                testWriter.write(String.format("Player[] players = new Player[%d];%s", playersCount, System.lineSeparator()));
+                System.out.printf("Player[] players = new Player[%d];%s", playersCount, System.lineSeparator());
+                for (int i = 0; i < playersCount; ++i) {
+                    testWriter.write(String.format("Player %s = new Player(%d, \"%s\", %d);\n", players[i].getName(), players[i].getId(), players[i].getName(), players[i].getRating()));
+                    System.out.printf("Player %s = new Player(%d, \"%s\", %d);\n", players[i].getName(), players[i].getId(), players[i].getName(), players[i].getRating());
+                    testWriter.write(String.format("players[%d] = %s;%s", i, players[i].getName(), System.lineSeparator()));
+                    System.out.printf("players[%d] = %s;%s", i, players[i].getName(), System.lineSeparator());
+                }
+
+
+                testWriter.write(String.format("League emptyLeague = new League();%s", System.lineSeparator()));
+                System.out.printf("League emptyLeague = new League();%s", System.lineSeparator());
+
+                testWriter.write(String.format("League league = new League(players, true);%s", System.lineSeparator()));
+                System.out.printf("League league = new League(players, true);%s", System.lineSeparator());
 
                 for (int i = 0; i < 100; ++i) {
                     boolean isNullPlayer = random.nextBoolean();
@@ -275,6 +296,9 @@ public class Program {
                         player = players[randomIndex];
                     } else {
                         player = new Player(playersCount + i + 1, String.format("player%d", playersCount + i + 1), random.nextInt(100) + 1);
+                        testWriter.write(String.format("Player playerToFind%d = new Player(%d, \"%s\", %d);\n", i + 1, player.getId(), player.getName(), player.getRating()));
+                        System.out.printf("Player playerToFind%d = new Player(%d, \"%s\", %d);\n", i + 1, player.getId(), player.getName(), player.getRating());
+
 
                         int minDiff = Integer.MAX_VALUE;
                         int minIndex = Integer.MIN_VALUE;
@@ -400,7 +424,6 @@ public class Program {
 
             League emptyLeague = new League();
             // TODO: SORT players BEFORE TESTING!!
-            quicksortPlayer(players);
             League league = new League(players, true);
 
             // count is in-bound
@@ -423,6 +446,7 @@ public class Program {
                 }
 
                 Player[] topPlayers = league.getTop(outOfBoundCount);
+
                 if (outOfBoundCount < 0) {
                     assert (topPlayers.length == 0);
                 } else {
@@ -451,7 +475,6 @@ public class Program {
 
             League emptyLeague = new League();
             // TODO: SORT players BEFORE TESTING!!
-            quicksortPlayer(players);
             League league = new League(players, true);
 
             // count is in-bound
@@ -2496,43 +2519,5 @@ public class Program {
             assert league.join(player3);
             assert league.join(player4);
         }
-    }
-
-    public static void quicksortPlayer(Player[] players) {
-        quicksortPlayerRecursive(players, 0, players.length - 1);
-    }
-
-    public static void quicksortPlayerRecursive(Player[] players, int left, int right) {
-        if (left >= right) {
-            return;
-        }
-
-        int pivotPos = partition(players, left, right);
-
-        quicksortPlayerRecursive(players, left, pivotPos - 1);
-        quicksortPlayerRecursive(players, pivotPos + 1, right);
-    }
-
-    public static int partition(Player[] players, int left, int right) {
-        int pivot = players[right].getRating();
-
-        int i = (left - 1);
-        for (int j = left; j < right; j++) {
-            if (players[j].getRating() < pivot) {
-                ++i;
-                swapPlayer2(players, i, j);
-            }
-        }
-
-        int pivotPos = i + 1;
-        swapPlayer2(players, pivotPos, right);
-
-        return pivotPos;
-    }
-
-    public static void swapPlayer2(Player[] players, int first, int second) {
-        Player playerDummy = players[first];
-        players[first] = players[second];
-        players[second] = playerDummy;
     }
 }

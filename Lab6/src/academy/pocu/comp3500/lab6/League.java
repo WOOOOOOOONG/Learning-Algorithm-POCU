@@ -47,27 +47,6 @@ public class League {
         } else {
             return players.get(curPlayerOrder);
         }
-
-        /*
-        // 3. 앞뒤 비교하여 차이가 더 적거나, 둘 다 같다면 뒤 선수 선택
-        int pre = 999999;
-        int back = 999999;
-        if ((curPlayerOrder - 1) >= 0) {
-            pre = Math.abs(player.getRating() - players.get(curPlayerOrder - 1).getRating());
-        }
-        if ((curPlayerOrder + 1) < players.size()) {
-            back = Math.abs(player.getRating() - players.get(curPlayerOrder + 1).getRating());
-        }
-
-        int result = -1;
-        if (pre != 999999 || back != 999999) {
-            result = pre < back ? curPlayerOrder - 1 : curPlayerOrder + 1;
-            //System.out.println("result : " + players.get(result).getId());
-            return players.get(result);
-        } else {
-            return null;
-        }
-         */
     }
 
     public Player[] getTop(final int count) {
@@ -187,7 +166,7 @@ public class League {
             }
         }
 
-        if (id < players.get(mid).getRating()) {
+        if (rating < players.get(mid).getRating()) {
             return findPlayer(players, id, rating, left, mid - 1);
         } else {
             return findPlayer(players, id, rating, mid + 1, right);
