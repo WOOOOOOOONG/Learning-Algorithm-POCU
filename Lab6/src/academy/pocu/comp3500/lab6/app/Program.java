@@ -6,14 +6,15 @@ import academy.pocu.comp3500.lab6.leagueofpocu.Player;
 public class Program {
 
     public static void main(String[] args) {
-        Player player1 = new Player(1, "player1", 9);
-        Player player2 = new Player(2, "player2", 10);
-        Player player3 = new Player(3, "player3", 14);
-        Player player4 = new Player(4, "player4", 14);
+        Player player1 = new Player(1, "player1", 12);
+        Player player2 = new Player(2, "player2", 17);
+        Player player3 = new Player(3, "player3", 12);
+        Player player4 = new Player(4, "player4", 18);
+        Player player5 = new Player(5, "player5", 10);
 
-        League league1 = new League(new Player[]{player1, player2, player3, player4}, true);
-        League league2 = new League(new Player[]{player4, player1, player3, player2}, false);
+        League league = new League(new Player[]{player1, player2, player3, player4, player5}, false);
 
-        league2.findMatchOrNull(player3);
+        Player[] bottomPlayers = league.getBottom(3); // player5, player1, player3 or player5, player3, player1
+        league.printPlayers(bottomPlayers);
     }
 }

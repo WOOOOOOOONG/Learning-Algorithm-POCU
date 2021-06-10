@@ -50,13 +50,12 @@ public class League {
         int pre = 999999;
         int back = 999999;
         if (players[curPlayerOrder - 1] != null) {
-            pre = players[curPlayerOrder - 1].getRating();
+            pre = Math.abs(player.getRating() - players[curPlayerOrder - 1].getRating());
         }
         if (players[curPlayerOrder + 1] != null) {
-            back = players[curPlayerOrder + 1].getRating();
+            back = Math.abs(player.getRating() - players[curPlayerOrder + 1].getRating());
         }
-        int result = pre < back ? pre : back;
-
+        int result = pre < back ? curPlayerOrder - 1 : curPlayerOrder + 1;
         if (result == 999999) {
             return null;
         } else {
@@ -67,7 +66,7 @@ public class League {
     public Player[] getTop(final int count) {
         Player[] topPlayers = new Player[count];
         int playerIndex = 0;
-        if (count > players.length) {
+        if (count > players.length || players.length == 0) {
             return null;
         }
 
@@ -76,7 +75,7 @@ public class League {
         }
 
         for (int i = players.length - 1; i > players.length - 1 - count; i--) {
-            topPlayers[playerIndex] = players[i];
+            topPlayers[playerIndex++] = players[i];
         }
         return topPlayers;
     }
@@ -93,7 +92,7 @@ public class League {
         }
 
         for (int i = 0; i <= players.length - count; i++) {
-            bottomPlayers[playerIndex] = players[i];
+            bottomPlayers[playerIndex++] = players[i];
         }
         return bottomPlayers;
     }
