@@ -3,7 +3,6 @@ package academy.pocu.comp3500.lab6;
 import academy.pocu.comp3500.lab6.leagueofpocu.Player;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class League {
     private ArrayList<Player> players;
@@ -120,6 +119,7 @@ public class League {
 
         Node.insertRecursive(root, player);
         players.add(player);
+        bIsSort = false;
 
         return true;
     }
@@ -130,6 +130,7 @@ public class League {
             for (int i = 0; i < players.size(); i++) {
                 if (player.getId() == players.get(i).getId()) {
                     players.remove(i);
+                    bIsSort = false;
                     return true;
                 }
             }
