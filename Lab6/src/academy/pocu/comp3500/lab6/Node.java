@@ -11,12 +11,20 @@ public class Node {
         this.player = player;
     }
 
+    public Player getPlayer() {
+        return this.player;
+    }
+
     public static Node getNodeOrNull(Node node, Player player) {
         if (node == null) {
             return null;
         }
 
-        if (player.getRating() < node.player.getRating()) {
+        if (node.getPlayer().getId() == player.getId()) {
+            return node;
+        }
+
+        if (player.getId() < node.player.getId()) {
             return getNodeOrNull(node.left, player);
         }
 
@@ -28,7 +36,7 @@ public class Node {
             return new Node(player);
         }
 
-        if (player.getRating() < node.player.getRating()) {
+        if (player.getId() < node.player.getId()) {
             node.left = insertRecursive(node.left, player);
         } else {
             node.right = insertRecursive(node.right, player);
@@ -47,7 +55,7 @@ public class Node {
         if (node.left != null) {
             node = node.left;
         }
-        while (node != null) {
+        while (node.right != null) {
             node = node.right;
         }
 
