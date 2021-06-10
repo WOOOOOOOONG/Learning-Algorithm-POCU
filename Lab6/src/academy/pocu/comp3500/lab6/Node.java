@@ -80,7 +80,7 @@ public class Node {
 
         if (findNode.left != null) {
             tempNode = getPredecessor(findNode.left);
-        } else if(findNode.right != null) {
+        } else if (findNode.right != null) {
             tempNode = getSuccessor(findNode.right);
         } else {
             Node parent = getNodeParent(rootNode, findNode.getPlayer());
