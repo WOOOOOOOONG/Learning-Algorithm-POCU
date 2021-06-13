@@ -202,10 +202,11 @@ public class Program {
                 while (reader.hasNextLine()) {
 //                    System.out.printf("%d-%d: ", counter, indentLevels.get(counter));
 
-                    if (indentLevels.get(counter) != -1) {
+                    if (counter < indentLevels.size() &&  indentLevels.get(counter) != -1) {
                         String assertString = "  ".repeat(Math.max(0, indentLevels.get(counter))) +
                                 logStrings.get(counter);
                         String line = reader.nextLine();
+                        System.out.println(line);
 //                        System.out.println("test: " + assertString + (brackets.get(counter) ? " true" : " false"));
 //                        System.out.printf("%d-%d: ", counter, indentLevels.get(counter));
 //                        System.out.print("line: " + line);

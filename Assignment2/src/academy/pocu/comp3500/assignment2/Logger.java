@@ -19,9 +19,9 @@ public final class Logger {
         try {
             for (int i = 0; i < log.getSize(); i++) {
                 writer.write(log.get(i));
+                writer.flush();
             }
 
-            writer.flush();
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);
