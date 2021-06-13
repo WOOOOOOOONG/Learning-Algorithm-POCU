@@ -22,7 +22,6 @@ public final class Logger {
             }
 
             writer.flush();
-            writer.close();
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);
@@ -30,7 +29,43 @@ public final class Logger {
     }
 
     public static void printTo(final BufferedWriter writer, final String filter) {
+        try {
+            /*
+            boolean bPrint = false;
+            for (int i = 0; i < log.getSize(); i++) {
+                if (!log.get(i).startsWith("  ")) {
+                    if (log.get(i).contains(filter)) {
+                        writer.write(log.get(i));
+                        bPrint = true;
+                    }
+                }
+                if (bPrint) {
+                    boolean bBackIndent = false;
+                    while (i + 1 < log.getSize() && log.get(i + 1).startsWith("  ")) {
+                        bBackIndent = true;
+                        i++;
+                        System.out.print(log.get(i));
+                        writer.write(log.get(i));
+                    }
+                    if (bBackIndent) {
+                        i--;
+                    }
+                    bPrint = false;
+                }
+            }
+            */
+            for (int i = 0; i < log.getSize(); i++) {
+                if (log.get(i).contains(filter)) {
+                    writer.write(log.get(i));
+                }
+            }
 
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e);
+        }
     }
 
     public static void clear() {

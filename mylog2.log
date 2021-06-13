@@ -1,0 +1,27 @@
+call sum()
+sum + 1
+sum: 1
+sum + 2
+sum: 3
+sum + 3
+sum: 6
+sum + 4
+sum: 10
+return sum: 10
+call average()
+call sum()
+sum + 1
+sum: 1
+sum + 2
+sum: 3
+sum + 3
+sum: 6
+sum + 4
+sum: 10
+return sum: 10
+sum / nums.length: 10 / 4
+return average: 2.500000
+this is not indented
+  but this is
+  so is this
+but not this

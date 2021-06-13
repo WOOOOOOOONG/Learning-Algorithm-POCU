@@ -1,0 +1,49 @@
+call sum()
+sum + 1
+sum: 1
+sum + 2
+sum: 3
+sum + 3
+sum: 6
+sum + 4
+sum: 10
+return sum: 10
+call average()
+call sum()
+sum + 1
+sum: 1
+sum + 2
+sum: 3
+sum + 3
+sum: 6
+sum + 4
+sum: 10
+return sum: 10
+sum / nums.length: 10 / 4
+return average: 2.500000
+this is not indented
+  but this is
+  so is this
+but not this
+first level 1
+  second level 1
+  second level 2
+    third level 1
+    third level 2
+  second level 3
+first level 2
+30 10 80 90 50 70 40
+  L: 30 10 40
+    L: 10
+    R: 30
+    X: 10 30
+  R: 90 50 70 80
+    L: 50 70 80
+      L: 50 70
+      R: 
+      X: 50 70
+    R: 90
+    X: 50 70 80 90
+  X: 10 30 40 50 70 80 90
+first level 1
+first level 2
