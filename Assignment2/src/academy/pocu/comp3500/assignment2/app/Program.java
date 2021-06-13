@@ -199,6 +199,7 @@ public class Program {
                 Scanner reader = new Scanner(new File("Assignment2/src/academy/pocu/comp3500/assignment2/app/test/f00.txt"));
 //                System.out.println("TEST=====================================");
                 int counter = 0;
+
                 while (reader.hasNextLine()) {
 //                    System.out.printf("%d-%d: ", counter, indentLevels.get(counter));
 
@@ -206,14 +207,13 @@ public class Program {
                         String assertString = "  ".repeat(Math.max(0, indentLevels.get(counter))) +
                                 logStrings.get(counter);
                         String line = reader.nextLine();
-                        System.out.println(line);
 //                        System.out.println("test: " + assertString + (brackets.get(counter) ? " true" : " false"));
 //                        System.out.printf("%d-%d: ", counter, indentLevels.get(counter));
 //                        System.out.print("line: " + line);
                         assert (line.equals(assertString));
                     }
-//                    System.out.println();
                     ++counter;
+
                 }
 
                 reader.close();

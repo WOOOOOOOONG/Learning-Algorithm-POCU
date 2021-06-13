@@ -57,11 +57,10 @@ public final class Logger {
             for (int i = 0; i < log.getSize(); i++) {
                 if (log.get(i).contains(filter)) {
                     writer.write(log.get(i));
+                    writer.flush();
                 }
             }
 
-            writer.flush();
-            writer.close();
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);
