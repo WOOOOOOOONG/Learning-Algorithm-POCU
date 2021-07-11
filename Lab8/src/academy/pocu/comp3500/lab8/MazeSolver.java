@@ -14,29 +14,32 @@ public final class MazeSolver {
         s.push(cur);
 
         while (true) {
-            if (maze[cur.getX()][cur.getY()] == 'E') {
-                s.push(new Point(cur.getY(), cur.getX()));
+            if (maze[cur.getY()][cur.getX()] == 'E') {
+                s.push(cur);
                 s.remove(0);
                 return s;
             }
-            maze[cur.getX()][cur.getY()] = 'p';
-             printMaze(maze);
+            maze[cur.getY()][cur.getX()] = 'p';
+            //printMaze(maze);
 
-             if ((maze[cur.getX() - 1][cur.getY()] == ' ' || maze[cur.getX() - 1][cur.getY()] == 'E') 
-                     && (!(s.peek().getX() == cur.getX() - 1 && s.peek().getY() == cur.getY()))) {
-                 s.push(cur);
-                 cur = new Point(cur.getX() - 1, cur.getY());
-            } else if ((maze[cur.getX() + 1][cur.getY()] == ' ' || maze[cur.getX() + 1][cur.getY()] == 'E') && (!(s.peek().getX() == cur.getX() + 1 && s.peek().getY() == cur.getY()))) {
-                 s.push(cur);
-                 cur = new Point(cur.getX() + 1, cur.getY());
-            } else if ((maze[cur.getX()][cur.getY() - 1] == ' ' || maze[cur.getX()][cur.getY() - 1] == 'E') && (!(s.peek().getX() == cur.getX() && s.peek().getY() == cur.getY() - 1))) {
+             if ((maze[cur.getY() - 1][cur.getX()] == ' ' || maze[cur.getY() - 1][cur.getX()] == 'E')
+                     && (!(s.peek().getY() == cur.getY() - 1 && s.peek().getX() == cur.getX()))) {
                  s.push(cur);
                  cur = new Point(cur.getX(), cur.getY() - 1);
-            } else if ((maze[cur.getX()][cur.getY() + 1] == ' '  || maze[cur.getX()][cur.getY() + 1] == 'E') && (!(s.peek().getX() == cur.getX() && s.peek().getY() == cur.getY() + 1))) {
+            } else if ((maze[cur.getY() + 1][cur.getX()] == ' ' || maze[cur.getY() + 1][cur.getX()] == 'E')
+                     && (!(s.peek().getY() == cur.getY() + 1 && s.peek().getX() == cur.getX()))) {
                  s.push(cur);
                  cur = new Point(cur.getX(), cur.getY() + 1);
+            } else if ((maze[cur.getY()][cur.getX() - 1] == ' ' || maze[cur.getY()][cur.getX() - 1] == 'E')
+                     && (!(s.peek().getY() == cur.getY() && s.peek().getX() == cur.getX() - 1))) {
+                 s.push(cur);
+                 cur = new Point(cur.getX() - 1, cur.getY());
+            } else if ((maze[cur.getY()][cur.getX() + 1] == ' '  || maze[cur.getY()][cur.getX() + 1] == 'E')
+                     && (!(s.peek().getY() == cur.getY() && s.peek().getX() == cur.getX() + 1))) {
+                 s.push(cur);
+                 cur = new Point(cur.getX() + 1, cur.getY());
             }  else {
-                 cur = new Point(s.peek().getX(), s.peek().getY());
+                 cur = new Point(s.peek().getY(), s.peek().getX());
                  s.pop();
              }
 
