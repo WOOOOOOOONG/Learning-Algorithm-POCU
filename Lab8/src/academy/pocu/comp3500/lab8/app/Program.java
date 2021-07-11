@@ -8,16 +8,14 @@ import java.util.List;
 public class Program {
 
     public static void main(String[] args) {
-        char[][] maze8x6 = new char[][]{
-                {'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'},
-                {'x', 'x', ' ', 'x', ' ', 'E', ' ', 'x'},
-                {'x', 'x', ' ', 'x', ' ', 'x', 'x', 'x'},
-                {'x', ' ', ' ', ' ', ' ', 'x', ' ', 'x'},
-                {'x', 'x', ' ', 'x', ' ', ' ', ' ', 'x'},
-                {'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'}
+        char[][] maze = new char[][]{
+                {'x', 'x', 'x', 'x', 'x'},
+                {'x', ' ', ' ', ' ', 'x'},
+                {'x', ' ', 'x', 'E', 'x'},
+                {'x', 'x', 'x', 'x', 'x'}
         };
 
-        List<Point> result = MazeSolver.findPath(maze8x6, new Point(2, 2));
+        List<Point> result = MazeSolver.findPath(maze, new Point(1, 2));
 
         print(result);
     }

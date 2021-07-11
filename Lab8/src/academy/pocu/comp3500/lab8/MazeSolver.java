@@ -7,45 +7,46 @@ import java.util.List;
 import java.util.Stack;
 
 public final class MazeSolver {
-    private static Stack<Point> stack = new Stack<>();
+    private static Stack<Point> s = new Stack<>();
 
     public static List<Point> findPath(final char[][] maze, final Point start) {
         Point cur = start;
-        stack.push(new Point(cur.getY(), cur.getX()));
+        s.push(cur);
 
         while (true) {
             if (maze[cur.getX()][cur.getY()] == 'E') {
-                stack.push(new Point(cur.getY(), cur.getX()));
-                stack.remove(0);
-                return stack;
+                s.push(new Point(cur.getY(), cur.getX()));
+                s.remove(0);
+                return s;
             }
             maze[cur.getX()][cur.getY()] = 'p';
-            printMaze(maze);
+             printMaze(maze);
 
-             if ((maze[cur.getX() - 1][cur.getY()] == ' ' || maze[cur.getX() - 1][cur.getY()] == 'E') && (!(stack.peek().getX() == cur.getX() - 1 && stack.peek().getY() == cur.getY()))) {
-                 stack.push(new Point(cur.getY(), cur.getX()));
+             if ((maze[cur.getX() - 1][cur.getY()] == ' ' || maze[cur.getX() - 1][cur.getY()] == 'E') 
+                     && (!(s.peek().getX() == cur.getX() - 1 && s.peek().getY() == cur.getY()))) {
+                 s.push(cur);
                  cur = new Point(cur.getX() - 1, cur.getY());
-            } else if ((maze[cur.getX() + 1][cur.getY()] == ' ' || maze[cur.getX() + 1][cur.getY()] == 'E') && (!(stack.peek().getX() == cur.getX() + 1 && stack.peek().getY() == cur.getY()))) {
-                 stack.push(new Point(cur.getY(), cur.getX()));
+            } else if ((maze[cur.getX() + 1][cur.getY()] == ' ' || maze[cur.getX() + 1][cur.getY()] == 'E') && (!(s.peek().getX() == cur.getX() + 1 && s.peek().getY() == cur.getY()))) {
+                 s.push(cur);
                  cur = new Point(cur.getX() + 1, cur.getY());
-            } else if ((maze[cur.getX()][cur.getY() - 1] == ' ' || maze[cur.getX()][cur.getY() - 1] == 'E') && (!(stack.peek().getX() == cur.getX() && stack.peek().getY() == cur.getY() - 1))) {
-                 stack.push(new Point(cur.getY(), cur.getX()));
+            } else if ((maze[cur.getX()][cur.getY() - 1] == ' ' || maze[cur.getX()][cur.getY() - 1] == 'E') && (!(s.peek().getX() == cur.getX() && s.peek().getY() == cur.getY() - 1))) {
+                 s.push(cur);
                  cur = new Point(cur.getX(), cur.getY() - 1);
-            } else if ((maze[cur.getX()][cur.getY() + 1] == ' '  || maze[cur.getX()][cur.getY() + 1] == 'E') && (!(stack.peek().getX() == cur.getX() && stack.peek().getY() == cur.getY() + 1))) {
-                 stack.push(new Point(cur.getY(), cur.getX()));
+            } else if ((maze[cur.getX()][cur.getY() + 1] == ' '  || maze[cur.getX()][cur.getY() + 1] == 'E') && (!(s.peek().getX() == cur.getX() && s.peek().getY() == cur.getY() + 1))) {
+                 s.push(cur);
                  cur = new Point(cur.getX(), cur.getY() + 1);
             }  else {
-                 cur = new Point(stack.peek().getY(), stack.peek().getX());
-                 stack.pop();
+                 cur = new Point(s.peek().getX(), s.peek().getY());
+                 s.pop();
              }
 
-             if (stack.isEmpty()) {
+             if (s.isEmpty()) {
                  break;
              }
         }
 
         //findPath(maze, new Point(start.getX() - 1, start.getY()));
-        return stack;
+        return s;
     }
 
     public static void printMaze(char[][] maze) {
