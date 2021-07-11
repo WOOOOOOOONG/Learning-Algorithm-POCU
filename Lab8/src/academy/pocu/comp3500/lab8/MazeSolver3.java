@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Stack;
 
 public final class MazeSolver3 {
+    /*
     private static Stack<Point> s = new Stack<>();
 
     public static List<Point> findPath(final char[][] maze, final Point start) {
@@ -61,4 +62,5 @@ public final class MazeSolver3 {
         }
         System.out.println();
     }
+     */
 }

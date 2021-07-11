@@ -1,6 +1,6 @@
 package academy.pocu.comp3500.lab8.app;
 
-import academy.pocu.comp3500.lab8.MazeSolver3;
+import academy.pocu.comp3500.lab8.MazeSolver;
 import academy.pocu.comp3500.lab8.maze.Point;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class Program {
                 {'x', 'x', ' ', 'x', ' ', ' ', ' ', 'x'},
                 {'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'}
         };
-        List<Point> result = MazeSolver3.findPath(maze8x6, new Point(2, 2));
+        List<Point> result = MazeSolver.findPath(maze8x6, new Point(2, 2));
 
         print(result);
     }
