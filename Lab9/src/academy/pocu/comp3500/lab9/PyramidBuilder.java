@@ -1,7 +1,6 @@
 package academy.pocu.comp3500.lab9;
 
-import java.sql.Array;
-import java.util.*;
+import java.util.Arrays;
 
 public class PyramidBuilder {
     public static int findMaxHeight(final int[] widths, int statue) {
