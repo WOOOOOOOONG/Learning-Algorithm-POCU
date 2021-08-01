@@ -1,4 +1,4 @@
-package academy.pocu.comp3500;
+package academy.pocu.comp3500.lab11;
 
 import academy.pocu.comp3500.lab11.data.Point;
 
