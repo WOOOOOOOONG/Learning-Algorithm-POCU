@@ -1,6 +1,7 @@
 package academy.pocu.comp3500.lab11;
 import academy.pocu.comp3500.lab11.data.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -8,8 +9,8 @@ public class BallBoy {
     public static List<Point> findPath(final Point[] points) {
         ArrayList<Point> pointArr = new ArrayList<>(points.length + 1);
         ArrayList<Point> mst = new ArrayList<>(pointArr.size());
-
-
+        Arrays.sort(points);
+        
         pointArr.add(new Point(0, 0));
         for (int i = 0; i < points.length; i++) {
             pointArr.add(points[i]);
