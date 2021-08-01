@@ -16,7 +16,7 @@ public class BallBoy {
         }
         DisjointSet set = new DisjointSet(pointArr);
 
-        for (int i = 0; i < pointArr.size() - 1; i += 2) {
+        for (int i = 0; i < points.length; i++) {
             Point n1 = pointArr.get(i);
             Point n2 = pointArr.get(i + 1);
 
