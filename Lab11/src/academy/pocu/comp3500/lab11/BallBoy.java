@@ -30,8 +30,8 @@ public class BallBoy {
             mst.add(pointArr.get(points.length));
         }
 
-
-        for (int i = points.length - 2; i > 0; i--) {
+        /*
+        for (int i = points.length - 1; i > 0; i--) {
             Point n1 = pointArr.get(i);
             Point n2 = pointArr.get(i - 1);
             if (mst.contains(n1)) {
@@ -43,7 +43,7 @@ public class BallBoy {
                 set.union(n1, n2);
             }
         }
-
+           */
         mst.add(pointArr.get(0));
         return mst;
     }
