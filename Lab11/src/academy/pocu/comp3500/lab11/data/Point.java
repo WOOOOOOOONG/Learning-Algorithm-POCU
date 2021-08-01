@@ -1,6 +1,6 @@
 package academy.pocu.comp3500.lab11.data;
 
-public final class Point {
+public final class Point implements Comparable<Point> {
     private final int x;
     private final int y;
 
@@ -20,5 +20,10 @@ public final class Point {
     @Override
     public String toString() {
         return String.format("[%d,%d]", x, y);
+    }
+
+    @Override
+    public int compareTo(Point p) {
+        return this.y - p.y;
     }
 }
